@@ -17,4 +17,4 @@ This is a basic Playwright automation testing framework.
 3. Run test:
    npm test
 4. Run test and generate allure report
-   
+   npm run test && npm run report
