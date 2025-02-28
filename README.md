@@ -14,5 +14,5 @@ This is a basic Playwright automation testing framework.
    git clone https://github.com/your-username/playwright-framework.git
 2. Install dependencies:
    npm install
-3. Run test
+3. Run test:
    npm test
