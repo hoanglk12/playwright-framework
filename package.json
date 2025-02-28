@@ -9,13 +9,15 @@
     "test": "npx playwright test",
     "test:headed": "npx playwright test --headed",
     "test:chrome": "npx playwright test --project=chromium",
-    "report": "npx playwright show-report"
+    "report": "npx allure generate ./allure-results --clean && npx allure open"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.50.1",
-    "@types/node": "^22.13.5"
+    "@types/node": "^22.13.5",
+    "allure-commandline": "^2.32.2",
+    "allure-playwright": "^3.2.0"
   }
 }

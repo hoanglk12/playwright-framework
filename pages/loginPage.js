@@ -1,27 +1,28 @@
-const BasePage = require('./basePage');
+const loginLocators = require('../locators/loginLocators');
 
-class LoginPage extends BasePage {
+class LoginPage {
   constructor(page) {
-    super(page);
-    this.usernameField = '#Login1_UserName';
-    this.passwordField = '#Login1_Password';
-    this.loginButton = '#Login1_LoginButton';
-    this.welcomeMessage = '#js-nav-breadcrumb i';
+    this.page = page;
   }
-
+  // Navigate to the login page
+  async navigateToLoginPage(baseUrl) {
+    await this.page.goto(`${baseUrl}/login`); // Assuming /login is the login page path
+    await this.page.waitForLoadState('networkidle'); // Wait for the page to fully load
+  }
   async enterUsername(username) {
-    await this.page.fill(this.usernameField, 'Hoang.Pham');
+    await this.page.fill(loginLocators.usernameField, username);
   }
 
   async enterPassword(password) {
-    await this.page.fill(this.passwordField, 'P@ssw0rd2024July');
+    await this.page.fill(loginLocators.passwordField, password);
   }
 
   async clickLogin() {
-    await this.page.click(this.loginButton);
+    await this.page.click(loginLocators.loginButton);
   }
-  async verifyWelcomeMessageDisplayed() {
-    await this.page.locator(this.welcomeMessage).waitFor({ state: 'visible', timeout: 10000 });
+
+  async isWelcomeMessageVisible() {
+    return await this.page.locator(loginLocators.welcomeMessage).isVisible();
   }
 }
 

@@ -10,6 +10,13 @@ class BasePage {
     async getTitle() {
       return await this.page.title();
     }
+    async login(username, password) {
+      await this.page.goto('https://example.com/login');
+      await this.page.fill('#username', username);
+      await this.page.fill('#password', password);
+      await this.page.click('#login-button');
+      await this.page.waitForNavigation();
+  }
   }
   
   module.exports = BasePage;

@@ -1,22 +1,46 @@
 const { defineConfig } = require('@playwright/test');
+const devConfig = require('./environments/dev.config');
+const prodConfig = require('./environments/prod.config');
 
 module.exports = defineConfig({
   timeout: 30 * 1000,
   retries: 0,
   workers: 1,
-  reporter: [['html', { outputFolder: 'test-results' }]],
+  reporter: [
+    ['list'], // Built-in reporter for console output
+    ['allure-playwright'], // Allure reporter
+  ],
   use: {
     headless: false,
     viewport: { width: 1280, height: 720 },
     actionTimeout: 15000,
     ignoreHTTPSErrors: true,
-    video: 'off',
+    video: 'on',
     screenshot: 'on',
   },
   projects: [
     {
-      name: 'chromium',
-      use: { browserName: 'chromium' },
+      name: 'chromium-dev',
+      use: { 
+        browserName: 'chromium',
+        baseUrl: devConfig.baseUrl,
+      },
     },
+    /*{
+      name: 'edge', // Microsoft Edge browser
+      use: { 
+        browserName: 'chromium', // Edge is based on Chromium
+        channel: 'msedge', // Use the Edge channel
+      },
+    },*/
+    /*{
+      name: 'firefox',
+      use: { browserName: 'firefox' },
+    },*/
+    /* {
+       name: 'webkit',
+       use: { browserName: 'webkit' },
+     },
+    */
   ],
 });

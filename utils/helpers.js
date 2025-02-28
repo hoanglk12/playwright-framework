@@ -4,3 +4,8 @@ module.exports = {
     },
     // Add more helper functions as needed
   };
+  function getDynamicLocator(baseSelector, dynamicText) {
+    return baseSelector.replace('{dynamicText}', dynamicText);
+  }
+  
+  module.exports = { getDynamicLocator };
