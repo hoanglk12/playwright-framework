@@ -1,5 +1,4 @@
 module.exports = {
-
     applicationListIcon: '#cms-applist-toggle',
     contentManagementApplication: '//div[@class="panel-heading"]//span[text()="Content management"]',
     searchTextBox: '#app_search',
