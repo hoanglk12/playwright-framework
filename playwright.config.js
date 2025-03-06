@@ -12,7 +12,7 @@ module.exports = defineConfig({
   ],
   use: {
     headless: false,
-    viewport: { width: 1280, height: 720 },
+    viewport: null,
     actionTimeout: 15000,
     ignoreHTTPSErrors: true,
     video: 'on',

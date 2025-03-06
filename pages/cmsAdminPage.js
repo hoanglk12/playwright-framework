@@ -58,30 +58,27 @@ class CMSAdminPage extends LoginPage {
 
     async getItemsPerPageValue() {
         try {
-            /*const frame = await this.page.frame('cmsdesktop');
+            const frame = await this.page.frame('cmsdesktop');
             if (!frame) throw new Error('Desktop frame not found');
             
-            const contentView = frame.frameLocator('iframe[name="contentview"]');
+            const contentView = frame.frameLocator('iframe[name="contentview"]').first();
+            if (!contentView) throw new Error('ContentView frame not found');
+            //const iframe_c = await contentView.frameLocator('iframe[name="c"]');
+            //await contentView.contentFrame().waitForLoadState('load');
+            console.log('contentView:', contentView);
+            // if (!iframe_c) throw new Error('C frame not found');
             
-            // Use window.scroll in the frame context
-            await frame.evaluate(() => {
-                const contentFrame = document.querySelector('iframe[name="contentview"]');
-                if (contentFrame && contentFrame.contentWindow) {
-                    contentFrame.contentWindow.scroll(0, 1000);
-                }
-            });*/
-            //await this.page.waitForTimeout(1000);
-            //await this.page.waitForLoadState('networkidle');
-            //const itemsPerPage = contentView.locator(cmsLocators.itemsPerPageInput);
-            //await this.page.mouse.down("middle");
-            await this.page.evaluate(() => {
-                window.scrollBy(0, 500); // Scrolls inside the iframe
-              });
-            const itemsPerPageElement = this.page.locator(cmsLocators.itemsPerPageInput);
-            await itemsPerPageElement.waitFor({ state: 'visible', timeout: 5000 });
+            // Scroll within the iframe context
+             //await contentView.evaluate(() => {
+                 //window.scrollBy(0, 1000);
+            //});
+            // await this.page.waitForTimeout(1000);
+            
+             const itemsPerPageElement = contentView.locator(cmsLocators.itemsPerPageInput);
+            // await itemsPerPageElement.waitFor({ state: 'visible', timeout: 5000 });
             const value = await itemsPerPageElement.inputValue();
             console.log('Items per page value:', value);
-            return value;
+            // return value;
             
         } catch (error) {
             console.error('Error in getItemsPerPageValue:', error);
