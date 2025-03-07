@@ -73,12 +73,14 @@ class CMSAdminPage extends LoginPage {
                  //window.scrollBy(0, 1000);
             //});
             // await this.page.waitForTimeout(1000);
-            
-             const itemsPerPageElement = contentView.locator(cmsLocators.itemsPerPageInput);
+            //await this.page.locator('iframe[name="cmsdesktop"]').contentFrame().locator('iframe[name="contentview"]').contentFrame().locator('iframe[name="c"]').contentFrame().getByRole('textbox', { name: 'Items Per Page:' }).click();
+
+            //const itemsPerPageElement = contentView.locator(cmsLocators.itemsPerPageInput);
+            const itemsPerPageElement = await this.page.locator('iframe[name="cmsdesktop"]').contentFrame().locator('iframe[name="contentview"]').contentFrame().locator('iframe[name="c"]').contentFrame().getByRole('textbox', { name: 'Items Per Page:' });
             // await itemsPerPageElement.waitFor({ state: 'visible', timeout: 5000 });
             const value = await itemsPerPageElement.inputValue();
             console.log('Items per page value:', value);
-            // return value;
+            return value;
             
         } catch (error) {
             console.error('Error in getItemsPerPageValue:', error);

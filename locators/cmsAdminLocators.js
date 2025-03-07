@@ -5,5 +5,5 @@ module.exports = {
     insightsCMSPage:'//span[@class="ContentTreeItem"]//span[text()="Insights"]',
     contentTab: '//span[@class="tab-title"][text()="Content"]',
     //itemsPerPageInput: '//div[@id="field_ItemsPerPage"]//input',
-    itemsPerPageInput: '//div[@id="m_c_f_ncptitle"]//input',
+    //itemsPerPageInput: '//div[@id="m_c_f_ncptitle"]//input',
 };
