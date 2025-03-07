@@ -1,3 +1,3 @@
 module.exports = {
-    lawyerCards: '.card__content', // Update with actual lawyer card selector
+    articleCard: '.card__content', // Update with actual article card selector
 };

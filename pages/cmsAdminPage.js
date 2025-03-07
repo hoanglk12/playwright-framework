@@ -14,6 +14,7 @@ class CMSAdminPage extends LoginPage {
         await this.enterUsername(devConfig.users.validUser.username);
         await this.enterPassword(devConfig.users.validUser.password);
         await this.clickLogin();
+        await this.page.waitForLoadState('load'); // Wait for the page to be fully loaded
     }
 
     async clickApplicationListIcon() {
@@ -58,26 +59,8 @@ class CMSAdminPage extends LoginPage {
 
     async getItemsPerPageValue() {
         try {
-            const frame = await this.page.frame('cmsdesktop');
-            if (!frame) throw new Error('Desktop frame not found');
-            
-            const contentView = frame.frameLocator('iframe[name="contentview"]').first();
-            if (!contentView) throw new Error('ContentView frame not found');
-            //const iframe_c = await contentView.frameLocator('iframe[name="c"]');
-            //await contentView.contentFrame().waitForLoadState('load');
-            console.log('contentView:', contentView);
-            // if (!iframe_c) throw new Error('C frame not found');
-            
-            // Scroll within the iframe context
-             //await contentView.evaluate(() => {
-                 //window.scrollBy(0, 1000);
-            //});
-            // await this.page.waitForTimeout(1000);
-            //await this.page.locator('iframe[name="cmsdesktop"]').contentFrame().locator('iframe[name="contentview"]').contentFrame().locator('iframe[name="c"]').contentFrame().getByRole('textbox', { name: 'Items Per Page:' }).click();
-
-            //const itemsPerPageElement = contentView.locator(cmsLocators.itemsPerPageInput);
+            await this.wait.forLoadState('load', 60000);
             const itemsPerPageElement = await this.page.locator('iframe[name="cmsdesktop"]').contentFrame().locator('iframe[name="contentview"]').contentFrame().locator('iframe[name="c"]').contentFrame().getByRole('textbox', { name: 'Items Per Page:' });
-            // await itemsPerPageElement.waitFor({ state: 'visible', timeout: 5000 });
             const value = await itemsPerPageElement.inputValue();
             console.log('Items per page value:', value);
             return value;

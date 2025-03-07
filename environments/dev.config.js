@@ -6,5 +6,6 @@ module.exports = {
         password: 'P@ssw0rd2024July',
       },
     },
-    liveSiteUrl: 'https://ff-fieldfishercom-qa-web-ekfefjdmh6dbg3f7.uksouth-01.azurewebsites.net'
+    liveSiteUrl: 'https://ff-fieldfishercom-qa-web-ekfefjdmh6dbg3f7.uksouth-01.azurewebsites.net',
+    insightsPageUrl: 'https://ff-fieldfishercom-qa-web-ekfefjdmh6dbg3f7.uksouth-01.azurewebsites.net/en/insights'
   };

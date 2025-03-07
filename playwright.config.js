@@ -17,6 +17,7 @@ module.exports = defineConfig({
     ignoreHTTPSErrors: true,
     video: 'on',
     screenshot: 'on',
+    timeout: 60000,
   },
   projects: [
     {
