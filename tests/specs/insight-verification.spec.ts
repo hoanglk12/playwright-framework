@@ -3,8 +3,7 @@ import CMSAdminPage from '../../pages/cmsAdminPage';
 import InsightsPage from '../../pages/insightsPage';
 
 
-
-test('Verify number of articles per page as per CMS configuration', async ({ page }) => {
+test('Verify articles per page on live site as per CMS configuration', async ({ page }) => {
     const cmsAdmin = new CMSAdminPage(page);
     const insightsPage = new InsightsPage(page);
 
@@ -21,9 +20,7 @@ test('Verify number of articles per page as per CMS configuration', async ({ pag
     await insightsPage.navigateToInsightsPage();
     const visibleArticles = await insightsPage.countVisibleArticles();
     
-    expect(visibleArticles).toBe(Number(itemsPerPage)); // Convert itemsPerPage to a number
-    console.log(`Visible Articles: ${visibleArticles}/18`);
+    expect(visibleArticles).toBe(Number(itemsPerPage));
+    console.log(`Visible Lawyers: ${visibleArticles}/18`);
 
-    // Step 4: Close Browser
-    await insightsPage.closeBrowserOnFailure();
 });

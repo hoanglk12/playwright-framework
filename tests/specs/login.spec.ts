@@ -6,13 +6,13 @@ test('Login with valid credentials', async ({ page }) => {
   const loginPage = new LoginPage(page);
 
   // Navigate to the login page
-  await loginPage.navigateToLoginPage(devConfig.baseUrl);
+  await loginPage.navigateToLoginPage();
 
   // Perform login
-  await loginPage.enterUsername(devConfig.users.validUser.username);
-  await loginPage.enterPassword(devConfig.users.validUser.password);
+  await loginPage.enterUsername();
+  await loginPage.enterPassword();
   await loginPage.clickLogin();
 
   // Verify success
-  await expect(loginPage.isWelcomeMessageVisible()).toBeTruthy();
+  await expect(loginPage.isHomeIconVisible()).toBeTruthy();
 });

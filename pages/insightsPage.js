@@ -1,27 +1,31 @@
+const constants = require('../config/constants');
 const devConfig = require('../environments/dev.config');
 const insightsLocators = require('../locators/insightsLocators');
+const Wait = require('../utils/Wait');
 const BasePage = require('./basePage');
 
-
-class InsightsPage extends BasePage{
-    constructor(page) {  // Changed constructor signature
-        super(page);     // Pass both browser and page to parent
+class InsightsPage extends BasePage {
+    constructor(page) {
+        super(page);
+        this.basePage = new BasePage(page);
+        this.wait = new Wait(page);
+        
     }
 
-
     async navigateToInsightsPage() {
-        await this.page.goto(devConfig.insightsPageUrl);
-        await this.page.waitForLoadState('domcontentloaded');
+        await this.basePage.navigate(devConfig.insightsPageUrl);
+        await this.wait.forLoadState('domcontentloaded', constants.SHORT_TIMEOUT); // Use the method from BasePage
     }
 
     async countVisibleArticles() {
-        await this.page.waitForSelector(insightsLocators.articleCard, { state: 'attached' });
-        const elements = await this.page.$$(insightsLocators.articleCard);
+        await this.page.waitForSelector(insightsLocators.articleCard.selector, { state: 'attached' });
+        const elements = await this.page.$$(insightsLocators.articleCard.selector);
         return elements.length;
-    }
-    async closeBrowser() {
-        await super.closeBrowserOnFailure();
         
+    }
+
+    async closeBrowser() {
+        await this.basePage.closeBrowserOnFailure();
     }
 }
 

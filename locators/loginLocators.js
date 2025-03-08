@@ -1,6 +1,30 @@
 module.exports = {
-    usernameField : '#Login1_UserName',
-    passwordField : '#Login1_Password',
-    loginButton : '#Login1_LoginButton',
-    welcomeMessage : '#js-nav-breadcrumb i',
-  };
+    usernameField: {
+        strategy: 'css',
+        selector: '#Login1_UserName',
+    },
+    passwordField: {
+        strategy: 'css',
+        selector: '#Login1_Password',
+    },
+    loginButton: {
+        strategy: 'css',
+        selector: '#Login1_LoginButton',
+    },
+    homeIcon: {
+        strategy: 'css',
+        selector: '#js-nav-breadcrumb i',
+    },
+    rememberMeCheckbox: {
+        strategy: 'css',
+        selector: '#Login1_RememberMe',
+    },
+    forgotPasswordLink: {
+        strategy: 'css',
+        selector: '#Login1_ForgotPassword',
+    },
+    errorMessage: {
+        strategy: 'css',
+        selector: '#Login1_ErrorMessage',
+    }
+};
