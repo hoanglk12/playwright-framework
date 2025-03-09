@@ -12,6 +12,7 @@ module.exports = defineConfig({
   ],
   use: {
     headless: false,
+    slowMo: 0,
     viewport: null,
     actionTimeout: 15000,
     ignoreHTTPSErrors: true,
