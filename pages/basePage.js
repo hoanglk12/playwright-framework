@@ -17,15 +17,6 @@ class BasePage {
     async getTitle() {
         return await this.page.title();
     }
-
-    async login(username, password) {
-        await this.page.goto('https://example.com/login');
-        await this.page.fill('#username', username);
-        await this.page.fill('#password', password);
-        await this.page.click('#login-button');
-        await this.page.waitForNavigation();
-    }
-
     async closeBrowserOnFailure(testResult) {
         if (!testResult) {
             try {
@@ -79,16 +70,10 @@ class BasePage {
     }
     async waitForElementsVisible(locatorConfig, options = {}) {
         const elements = await this._getLocator(this.page, locatorConfig);
-
-      // Wait for each element to be visible
-     
         await elements.waitFor({ state: 'visible', timeout: options.timeout || DEFAULT_TIMEOUT });
-        
-      
     }
     async pressKey(key) {
        await this.page.keyboard.press(key);
-            
     }
 
     async clickElementInFrameName(frameName, role, name, options = {}) {
@@ -143,37 +128,7 @@ class BasePage {
           throw error;
         }
       }
-      async interactWithElementInFrame(frameName, locatorConfig, options = {}) {
-        try {
-          // Validate locator configuration
-          if (!locatorConfig?.strategy || !locatorConfig?.selector) {
-            throw new Error(`Invalid locator config: ${JSON.stringify(locatorConfig)}`);
-          }
     
-          // Wait for the iframe to be attached
-          await this.page.waitForSelector(`iframe[name="${frameName}"]`, {
-            state: 'attached',
-            timeout: options.timeout || DEFAULT_TIMEOUT
-          });
-    
-          // Switch to the iframe
-          const iframe = this.page.frame({ name: frameName });
-          if (!iframe) {
-            throw new Error(`Iframe with name "${frameName}" not found`);
-          }
-    
-          // Locate the element within the iframe using the dynamic locator
-          const element = await this._getLocator(iframe, locatorConfig, options.timeout);
-    
-          // Perform the action (e.g., click)
-          await element.click(options);
-    
-          console.log(`Clicked element in iframe "${frameName}" using strategy: ${locatorConfig.strategy}`);
-        } catch (error) {
-          console.error(`Failed to interact with element in iframe "${frameName}":`, error);
-          throw error;
-        }
-      }
 
     /**
        * Wait for a frame to be attached and return its context

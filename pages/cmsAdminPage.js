@@ -1,12 +1,11 @@
 const cmsLocators = require('../locators/cmsAdminLocators');
-const LoginPage = require('./loginPage');
 const devConfig = require('../environments/dev.config');
-const Wait = require('../utils/Wait');  // Remove destructuring
-const cmsAdminData = require('../utils/cmsAdminData.json'); // Import the JSON data
-const BasePage = require('./basePage');
+const cmsAdminData = require('../utils/cmsAdminData.json');
 const loginLocators = require('../locators/loginLocators');
 const constants = require('../config/constants');
 const cmsAdminLocators = require('../locators/cmsAdminLocators');
+const BasePage = require('./basePage');
+const Wait = require('../utils/Wait');
 
 class CMSAdminPage extends BasePage {
     constructor(page) {
@@ -39,23 +38,17 @@ class CMSAdminPage extends BasePage {
     }
 
     async clickInsightsCMSPage() {
-        // const iframe = await this.page.frame({ name: 'cmsdesktop' });
-        // if (!iframe) throw new Error('Iframe not found');
-        // await iframe.getByRole('link', { name: 'Insights Published page' }).click();
-        // await this.page.waitForTimeout(1000); // Adjust based on actual load time
-        //await this.wait._waitForFrame
+      
         await this.basePage.clickElementInFrameLocator(cmsAdminLocators.iframeHierarchy.cmsDesktop.selector, cmsAdminLocators.insightsPublishedPage.selector.roleType,cmsAdminLocators.insightsPublishedPage.selector.roleName);
     }
 
     async clickContentTab() {
         try {
-            await this.wait.forLoadState('load', 60000);
+            await this.wait.forLoadState('load', constants.LONG_TIMEOUT);
             
-            const frame = await this.wait.forFrame('cmsdesktop');
-            const contentFrame = frame.frameLocator('iframe[name="contentview"]').first();
+            const frame = await this.wait.forFrameLocator(cmsAdminLocators.iframeHierarchy.cmsDesktop.selector);
+            const contentFrame = frame.frameLocator(cmsAdminLocators.iframeHierarchy.contentView.selector).first();
             await contentFrame.locator(cmsAdminLocators.contentTab.selector).click();
-            
-            await this.page.waitForTimeout(2000);
         } catch (error) {
             console.error('Error in clickContentTab:', error);
             throw error;
@@ -65,8 +58,8 @@ class CMSAdminPage extends BasePage {
 
     async getItemsPerPageValue() {
         try {
-            await this.wait.forLoadState('load', 60000);
-            const itemsPerPageElement = await this.page.locator('iframe[name="cmsdesktop"]').contentFrame().locator('iframe[name="contentview"]').contentFrame().locator('iframe[name="c"]').contentFrame().getByRole('textbox', { name: 'Items Per Page:' });
+            await this.wait.forLoadState('load', constants.LONG_TIMEOUT);
+            const itemsPerPageElement = await this.page.locator(cmsAdminLocators.iframeHierarchy.cmsDesktop.selector).contentFrame().locator(cmsAdminLocators.iframeHierarchy.contentView.selector).contentFrame().locator(cmsAdminLocators.iframeHierarchy.frameC.selector).contentFrame().getByRole(cmsAdminLocators.itemsPerPage.selector.roleType, { name: cmsAdminLocators.itemsPerPage.selector.roleName });
             const value = await itemsPerPageElement.inputValue();
             console.log('Items per page value:', value);
             return value;
@@ -76,6 +69,7 @@ class CMSAdminPage extends BasePage {
             throw error;
         }
     }
+    
 }
 
 module.exports = CMSAdminPage;

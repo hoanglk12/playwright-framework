@@ -1,3 +1,5 @@
+const constants = require("../config/constants");
+
 class Wait {
     constructor(page) {
         if (!page) {
@@ -6,18 +8,18 @@ class Wait {
         this.page = page;
     }
 
-    async forElement(locator, timeout = 10000) {
+    async forElement(locator, timeout = constants.DEFAULT_TIMEOUT) {
         await this.page.waitForSelector(locator, { state: 'visible', timeout });
     }
 
-    async forElementToBeClickable(locator, timeout = 10000) {
+    async forElementToBeClickable(locator, timeout = constants.DEFAULT_TIMEOUT) {
         await this.page.waitForSelector(locator, { state: 'visible', timeout });
         const element = this.page.locator(locator);
         await element.waitFor({ state: 'attached' });
         return element;
     }
 
-    async forFrame(frameName, timeout = 60000) {
+    async forFrameName(frameName, timeout = constants.LONG_TIMEOUT) {
         const startTime = Date.now();
         while (Date.now() - startTime < timeout) {
             try {
@@ -33,15 +35,30 @@ class Wait {
         }
         throw new Error(`Frame ${frameName} not found after ${timeout}ms`);
     }
-
-    async forLoadState(state = 'networkidle', timeout = 60000) {
+    async forFrameLocator(frameLocator, timeout = 60000) {
+      const startTime = Date.now();
+      while (Date.now() - startTime < timeout) {
+          try {
+              await this.page.waitForSelector(frameLocator, { timeout: 5000 });
+              const frame = this.page.frameLocator(frameLocator);
+              if (frame) return frame;
+          } catch (error) {
+              if (Date.now() - startTime >= timeout) {
+                  throw new Error(`Frame ${frameName} not found after ${timeout}ms`);
+              }
+              await this.page.waitForTimeout(1000);
+          }
+      }
+      throw new Error(`Frame ${frameName} not found after ${timeout}ms`);
+  }
+    async forLoadState(state = 'networkidle', timeout = constants.LONG_TIMEOUT) {
         try {
             await this.page.waitForLoadState(state, { timeout });
         } catch (error) {
             console.warn(`Wait for ${state} timed out: ${error.message}`);
         }
     }
-    static async forElementAttached(page, locatorConfig, timeout = DEFAULT_TIMEOUT) {
+    static async forElementAttached(page, locatorConfig, timeout = constants.DEFAULT_TIMEOUT) {
         try {
           const { strategy, selector , iframes = [] } = locatorConfig;
           let context = page;
