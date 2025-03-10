@@ -5,7 +5,7 @@ This is a basic Playwright automation testing framework.
 ## Features
 - Page Object Model (POM) pattern
 - Support for multiple browsers
-- HTML reporting
+- Allure reporting
 - CI/CD integration
 
 ## Setup
