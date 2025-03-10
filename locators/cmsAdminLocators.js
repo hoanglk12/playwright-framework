@@ -16,6 +16,7 @@ module.exports = {
       strategy: 'xpath',
       selector: '//span[@class="ContentTreeItem"]//span[text()="Insights"]'
     },
+    
     pageTab: {
       strategy: 'xpath',
       selector: '//li[@class="js-filter-item highlighted"]//a[text()="Pages"]'
@@ -52,5 +53,48 @@ module.exports = {
         roleType: 'link',
         roleName: 'Insights Published page'
       }
+    },
+    articlePageTypes_EditBtnRow6:{
+      strategy: 'css',
+      selector: '#m_c_g_v_ctl06_aedit'
+    },
+    articlePageTypes_PagesTabLink:{
+      strategy: 'role',
+      selector: {
+        roleType: 'link',
+        roleName: 'Pages'
+    },
+    articlePageTypes_NameFilterTextbox:{
+      strategy: 'css',
+      selector: '#m_c_filterDocuments_nameFilter_txtText'
+    },
+    articlePageTypes_SearchBtn:{
+      strategy: 'role',
+      selector: {
+        roleType: 'button',
+        roleName: 'Search'
     }
-  };
+    }
+},
+  articlePageTypes_EditPageBtn: {
+    strategy: 'role',
+    selector: {
+      roleType: 'button',
+      roleName: 'Edit page'
+    }
+  },
+  contentTab_EmailSubscription: {
+    strategy: 'role',
+    selector: {
+      roleType: 'heading',
+      roleName: 'Email Subscription'
+    }
+  },
+  contentTab_PrimaryCategory: {
+    strategy: 'role',
+    selector: {
+      roleType: 'textbox',
+      roleName: 'Primary Category:'
+    }
+  }
+};

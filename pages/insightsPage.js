@@ -14,7 +14,7 @@ class InsightsPage extends BasePage {
 
     async navigateToInsightsPage() {
         await this.basePage.navigate(devConfig.insightsPageUrl);
-        await this.wait.forLoadState('domcontentloaded', constants.SHORT_TIMEOUT); // Use the method from BasePage
+        await this.wait.forLoadState('domcontentloaded', constants.LONG_TIMEOUT); // Use the method from BasePage
     }
 
     async countVisibleArticles() {

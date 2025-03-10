@@ -1,9 +1,20 @@
 import { test, expect } from '@playwright/test';
 import CMSAdminPage from '../../pages/cmsAdminPage';
 import InsightsPage from '../../pages/insightsPage';
+const BasePage = require('../../pages/basePage');
+
+let basePage;
+test.beforeEach(async ({ page }) => {
+  basePage = new BasePage(page); // Initialize BasePage
+});
+
+test.afterEach(async ({}, testInfo) => {
+  await basePage.closeBrowserOnFailure(testInfo); // Call closeBrowserOnFailure after each test
+});
 
 
 test('Verify articles per page on live site as per CMS configuration', async ({ page }) => {
+  
     const cmsAdmin = new CMSAdminPage(page);
     const insightsPage = new InsightsPage(page);
 
@@ -23,4 +34,5 @@ test('Verify articles per page on live site as per CMS configuration', async ({ 
     expect(visibleArticles).toBe(Number(itemsPerPage));
     console.log(`Visible Lawyers: ${visibleArticles}/18`);
 
+    await insightsPage.closeBrowser();
 });

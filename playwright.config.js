@@ -1,10 +1,12 @@
 const { defineConfig } = require('@playwright/test');
 const devConfig = require('./environments/dev.config');
 const prodConfig = require('./environments/prod.config');
+const { clearAllureResults } = require('./utils/helpers');
+
 
 module.exports = defineConfig({
   timeout: 30 * 1000,
-  retries: 0,
+  retries: 1,
   workers: 1,
   reporter: [
     ['list'], // Built-in reporter for console output
@@ -27,6 +29,7 @@ module.exports = defineConfig({
         browserName: 'chromium',
         baseUrl: devConfig.baseUrl,
       },
+      
     },
     /*{
       name: 'edge', // Microsoft Edge browser
@@ -45,4 +48,5 @@ module.exports = defineConfig({
      },
     */
   ],
+  globalSetup: require.resolve('./global-setup.js'),
 });

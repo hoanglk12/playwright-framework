@@ -18,25 +18,25 @@ class BasePage {
         return await this.page.title();
     }
     async closeBrowserOnFailure(testResult) {
-        if (!testResult) {
-            try {
-                await this.page.close();
-                exec('taskkill /F /IM taskmgr.exe', (error, stdout, stderr) => {
-                    if (error) {
-                        console.error(`Error killing task manager process: ${error.message}`);
-                        return;
-                    }
-                    if (stderr) {
-                        console.error(`stderr: ${stderr}`);
-                        return;
-                    }
-                    console.log(`stdout: ${stdout}`);
-                });
-            } catch (error) {
-                console.error('Error in closeBrowserOnFailure:', error);
-                throw error;
+      if (testResult && testResult.status === 'failed') {
+        try {
+          await this.page.close();
+          exec('taskkill /F /IM taskmgr.exe', (error, stdout, stderr) => {
+            if (error) {
+              console.error(`Error killing task manager process: ${error.message}`);
+              return;
             }
+            if (stderr) {
+              console.error(`stderr: ${stderr}`);
+              return;
+            }
+            console.log(`stdout: ${stdout}`);
+          });
+        } catch (error) {
+          console.error('Error in closeBrowserOnFailure:', error);
+          throw error;
         }
+      }
     }
 
     async waitForPageLoad() {

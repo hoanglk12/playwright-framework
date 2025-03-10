@@ -14,7 +14,11 @@ This is a basic Playwright automation testing framework.
    git clone https://github.com/your-username/playwright-framework.git
 2. Install dependencies:
    npm install
-3. Run test:
+3. Run all tests:
    npm test
-4. Run test and generate allure report
+4. Run all tests and generate allure report:
    npm run test && npm run report
+5. Run specific test:
+   npx playwright test tests/specs/articleDatalayer.spec.js tests/specs/insight-verification.spec.ts tests/specs/login.spec.ts
+
+
