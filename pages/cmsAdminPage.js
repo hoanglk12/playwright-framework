@@ -69,7 +69,33 @@ class CMSAdminPage extends BasePage {
             throw error;
         }
     }
+    async editArticlePage(articleTitle) {
+  await page.locator('iframe[name="cmsdesktop"]').contentFrame().locator('iframe[name="c"]').contentFrame().locator('#m_c_g_v_ctl06_aedit').click();
+  await page.locator('iframe[name="cmsdesktop"]').contentFrame().locator('iframe[name="c"]').contentFrame().getByRole('link', { name: 'Pages' }).click();
+  await page.locator('iframe[name="cmsdesktop"]').contentFrame().locator('iframe[name="c"]').contentFrame().locator('iframe[name="c"]').contentFrame().locator('#m_c_filterDocuments_nameFilter_txtText').click();
+  await page.locator('iframe[name="cmsdesktop"]').contentFrame().locator('iframe[name="c"]').contentFrame().locator('iframe[name="c"]').contentFrame().locator('#m_c_filterDocuments_nameFilter_txtText').fill(articleTitle);
+  await page.locator('iframe[name="cmsdesktop"]').contentFrame().locator('iframe[name="c"]').contentFrame().locator('iframe[name="c"]').contentFrame().getByRole('button', { name: 'Search' }).click();
+  await page.locator('iframe[name="cmsdesktop"]').contentFrame().locator('iframe[name="c"]').contentFrame().locator('iframe[name="c"]').contentFrame().getByRole('button', { name: 'Edit page' }).click();
+  await page.locator('iframe[name="cmsdesktop"]').contentFrame().locator('iframe[name="contentview"]').contentFrame().locator('iframe[name="c"]').contentFrame().getByRole('heading', { name: 'Email Subscription' }).click();
+      }
     
+      async getPrimaryCategoryValue() {
+        
+        try {
+            await this.wait.forLoadState('load', constants.LONG_TIMEOUT);
+            
+            const frame = await this.wait.forFrameLocator(cmsAdminLocators.iframeHierarchy.cmsDesktop.selector);
+            const contentViewFrame = frame.frameLocator(cmsAdminLocators.iframeHierarchy.contentView.selector);
+            const frame_c = contentViewFrame.frameLocator(cmsAdminLocators.iframeHierarchy.frameC.selector).first();
+            await frame_c.locator(cmsAdminLocators.iframeHierarchy.frameC.selector).contentFrame().getByRole(cmsAdminLocators.contentTab_PrimaryCategory.roleType, { name: cmsAdminLocators.emailSubscriptionSection.roleName }).click();
+            return frame_c.locator(cmsAdminLocators.iframeHierarchy.frameC.selector).contentFrame().getByRole(cmsAdminLocators.contentTab_PrimaryCategory.roleType, { name: cmsAdminLocators.primaryCategoryDropdown.roleName })
+        } catch (error) {
+            console.error('Error in clickContentTab:', error);
+            throw error;
+        }
+        await frame.locator(articleLocators.admin.emailSubscriptionSection).click();
+        return await frame.locator(articleLocators.admin.primaryCategoryDropdown).inputValue();
+      }
 }
 
 module.exports = CMSAdminPage;
