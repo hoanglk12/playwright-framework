@@ -10,10 +10,14 @@ module.exports = defineConfig({
   workers: 1,
   reporter: [
     ['list'], // Built-in reporter for console output
-    ['allure-playwright'], // Allure reporter
+    ['allure-playwright', {
+      detail: true,
+      outputFolder: 'allure-results',
+      suiteTitle: false
+    }], // Allure reporter
   ],
   use: {
-    headless: false,
+    headless: true,
     slowMo: 0,
     viewport: null,
     actionTimeout: 15000,
@@ -21,6 +25,7 @@ module.exports = defineConfig({
     video: 'on',
     screenshot: 'on',
     timeout: 60000,
+    //channel: 'chrome'
   },
   projects: [
     {

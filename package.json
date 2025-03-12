@@ -5,7 +5,7 @@
   "main": "index.js",
   "@playwright/test": "^1.50.1",
   "playwright": "^1.50.1",
-  "scripts": {
+ "scripts": {
     "test": "npx playwright test",
     "test:headed": "npx playwright test --headed",
     "test:chrome": "npx playwright test --project=chromium",
@@ -18,7 +18,9 @@
     "@playwright/test": "^1.50.1",
     "@types/node": "^22.13.5",
     "allure-commandline": "^2.32.2",
-    "allure-playwright": "^3.2.0"
+    "allure-playwright": "^3.2.0",
+    "chrome-launcher": "^1.1.2",
+    "lighthouse": "^12.4.0"
   },
   "dependencies": {
     "playwright": "^1.50.1"
