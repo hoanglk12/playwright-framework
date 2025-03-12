@@ -36,13 +36,21 @@ test('Validate article datalayer vs CMS primary category', async ({ page }) => {
   await basePage.fillElement(cmsLocators.searchTextBox, articleDataLayerData.seachTextPageTypes);
   await basePage.pressKey('Enter');
   await wait.forLoadState('networkidle', constants.LONG_TIMEOUT); 
-  //await basePage.clickElement(cmsLocators.pageTab);
-  //await wait.forLoadState('networkidle', constants.DEFAULT_TIMEOUT); 
 
+  //Step 3: Edit the article page and expand the email subscription
   await cmsAdminPage.editArticlePage(articleTitle);
-  await cmsAdminPage.getPrimaryCategoryValue();
-  const primaryCategory = await cmsAdminPage.getPrimaryCategoryValue();
+  await cmsAdminPage.expandEmailSubscription();
+  await wait.forLoadState('domcontentloaded', constants.LONG_TIMEOUT); 
 
-  //Assert
-  expect(primaryCategory).toBe(Number(practiceArea));
+  //Step 4: Get the extracted primary category value from CMS
+  const primaryCategoryValue = await page.locator('iframe[name="cmsdesktop"]').contentFrame().locator('iframe[name="contentview"]').contentFrame().locator('iframe[name="c"]').contentFrame().getByRole(cmsLocators.contentTab_PrimaryCategory.selector.roleType, { name: cmsLocators.contentTab_PrimaryCategory.selector.roleName }).inputValue();
+  await wait.forLoadState('domcontentloaded', constants.LONG_TIMEOUT);
+  console.log('Primary Category With Path From CMS: ', primaryCategoryValue);
+  const pattern = /^[^(]+/;
+  const extractedPrimaryCategory = primaryCategoryValue.match(pattern)[0].trim();
+  console.log(`Extracted Primary Category: ${extractedPrimaryCategory}`);
+
+          
+  //Step 5: Verify the extracted primary category value from CMS matches the practice area value from the article datalayer
+  expect(extractedPrimaryCategory).toBe(practiceArea);
 });
