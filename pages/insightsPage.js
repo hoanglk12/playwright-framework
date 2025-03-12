@@ -18,15 +18,13 @@ class InsightsPage extends BasePage {
     }
 
     async countVisibleArticles() {
-        await this.page.waitForSelector(insightsLocators.articleCard.selector, { state: 'attached' });
+        await this.page.waitForSelector(insightsLocators.articleCard.selector, { state: 'visible' });
         const elements = await this.page.$$(insightsLocators.articleCard.selector);
         return elements.length;
         
     }
 
-    async closeBrowser() {
-        await this.basePage.closeBrowserOnFailure();
-    }
+   
 }
 
 module.exports = InsightsPage;
