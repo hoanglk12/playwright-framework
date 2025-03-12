@@ -43,5 +43,6 @@ test('Validate article datalayer vs CMS primary category', async ({ page }) => {
   await cmsAdminPage.getPrimaryCategoryValue();
   const primaryCategory = await cmsAdminPage.getPrimaryCategoryValue();
 
+  //Assert
   expect(primaryCategory).toBe(Number(practiceArea));
 });

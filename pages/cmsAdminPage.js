@@ -108,10 +108,10 @@ class CMSAdminPage extends BasePage {
             // await frame_c.locator(cmsAdminLocators.iframeHierarchy.frameC.selector).contentFrame().locator('//h4[contains(text(),"Email Subscription")]//parent::div//img').click();
             // await this.wait.forLoadState('load', constants.LONG_TIMEOUT);
             // const itemsPerPageElement = await this.page.locator(cmsAdminLocators.iframeHierarchy.cmsDesktop.selector).contentFrame().locator(cmsAdminLocators.iframeHierarchy.contentView.selector).contentFrame().locator(cmsAdminLocators.iframeHierarchy.frameC.selector).contentFrame().getByRole(cmsAdminLocators.itemsPerPage.selector.roleType, { name: cmsAdminLocators.itemsPerPage.selector.roleName });
-            //await this.page.locator('iframe[name="cmsdesktop"]').contentFrame().locator('iframe[name="c"]').contentFrame().locator('div[id="id-1579768781"]').click();
-            const iframe = this.page.frameLocator('iframe[name="c"]');
-            await iframe.locator('div[id="id-1579768781"]').click();
-            await iframe.waitForTimeout(3000);
+            await this.page.locator('iframe[name="cmsdesktop"]').contentFrame().locator('iframe[name="contentview"]').contentFrame().locator('iframe[name="c"]').contentFrame().getByRole(cmsAdminLocators.contentTab_EmailSubscription.selector.roleType, { name: cmsAdminLocators.contentTab_EmailSubscription.selector.roleName }).click();
+            await this.page.waitForTimeout(3000);
+            return await this.page.locator('iframe[name="cmsdesktop"]').contentFrame().locator('iframe[name="contentview"]').contentFrame().locator('iframe[name="c"]').contentFrame().getByRole(cmsAdminLocators.contentTab_PrimaryCategory.selector.roleType, { name: cmsAdminLocators.contentTab_PrimaryCategory.selector.roleName }).inputValue();
+            
             // return frame_c.locator(cmsAdminLocators.iframeHierarchy.frameC.selector).contentFrame().getByRole(cmsAdminLocators.contentTab_PrimaryCategory.selector.roleType, { name: cmsAdminLocators.primaryCategoryDropdown.selector.roleName }).inputValue();
         } catch (error) {
             console.error('Error in clickContentTab:', error);
