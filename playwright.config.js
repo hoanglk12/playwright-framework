@@ -17,7 +17,7 @@ module.exports = defineConfig({
     }], // Allure reporter
   ],
   use: {
-    headless: true,
+    headless: false,
     slowMo: 0,
     viewport: null,
     actionTimeout: 15000,

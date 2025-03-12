@@ -38,4 +38,10 @@ test('Validate article datalayer vs CMS primary category', async ({ page }) => {
   await wait.forLoadState('networkidle', constants.LONG_TIMEOUT); 
   //await basePage.clickElement(cmsLocators.pageTab);
   //await wait.forLoadState('networkidle', constants.DEFAULT_TIMEOUT); 
+
+  await cmsAdminPage.editArticlePage(articleTitle);
+  await cmsAdminPage.getPrimaryCategoryValue();
+  const primaryCategory = await cmsAdminPage.getPrimaryCategoryValue();
+
+  expect(primaryCategory).toBe(Number(practiceArea));
 });

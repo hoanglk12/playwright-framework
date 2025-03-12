@@ -54,6 +54,10 @@ module.exports = {
         roleName: 'Insights Published page'
       }
     },
+    pageTypes_Application:{
+      strategy: 'css',
+      selector: 'li.js-filter-item.highlighted:not([style]) > a'
+    },
     articlePageTypes_EditBtnRow6:{
       strategy: 'css',
       selector: '#m_c_g_v_ctl06_aedit'
