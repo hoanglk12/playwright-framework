@@ -33,6 +33,4 @@ test('Verify articles per page on live site as per CMS configuration', async ({ 
     
     expect(visibleArticles).toBe(Number(itemsPerPage));
     console.log(`Visible Lawyers: ${visibleArticles}/18`);
-
-    await insightsPage.closeBrowser();
 });

@@ -19,7 +19,7 @@ module.exports = defineConfig({
   use: {
     headless: false,
     slowMo: 0,
-    viewport: null,
+    viewport: { width: 1920, height: 1080 },
     actionTimeout: 15000,
     ignoreHTTPSErrors: true,
     video: 'on',
@@ -32,7 +32,7 @@ module.exports = defineConfig({
       name: 'chromium-dev',
       use: { 
         browserName: 'chromium',
-        baseUrl: devConfig.baseUrl,
+        channel: 'chrome'
       },
       
     },
