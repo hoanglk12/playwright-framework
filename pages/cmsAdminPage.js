@@ -87,6 +87,57 @@ class CMSAdminPage extends BasePage {
         await this.wait.forLoadState('domcontentloaded', constants.LONG_TIMEOUT);
         await this.page.locator('iframe[name="cmsdesktop"]').contentFrame().locator('iframe[name="contentview"]').contentFrame().locator('iframe[name="c"]').contentFrame().getByRole(cmsAdminLocators.contentTab_EmailSubscription.selector.roleType, { name: cmsAdminLocators.contentTab_EmailSubscription.selector.roleName }).click();
     }
+    async clickHomePageLink() {
+        const frame = await this.page.locator(cmsAdminLocators.iframeHierarchy.cmsDesktop.selector).contentFrame();
+        await frame.getByRole('link', { name: 'Fieldfisher | A law firm' }).click();
+        await this.wait.forLoadState('networkidle', constants.DEFAULT_TIMEOUT);
+    }
+
+    async openHeroBannerProperties() {
+        const mainFrame = await this.page.locator(cmsAdminLocators.iframeHierarchy.cmsDesktop.selector).contentFrame();
+        const contentFrame = mainFrame.locator(cmsAdminLocators.iframeHierarchy.contentView.selector).contentFrame();
+        const innerFrame = contentFrame.locator(cmsAdminLocators.iframeHierarchy.frameC.selector).contentFrame();
+        const pageFrame = innerFrame.locator('iframe[name="pageview"]').contentFrame();
+        await pageFrame.locator(cmsAdminLocators.heroBanner.bannerImage.selector).click();
+        await pageFrame.locator('kentico-widget-header').filter({ hasText: 'Banner, Hero' }).locator('a').nth(1).click();
+        //await this.page.waitForTimeout(5000);
+        
+        //await pageFrame.locator(cmsAdminLocators.heroBanner.wheelIcon.selector).click();
+        //await pageFrame.locator('#host-element >> a').click({ timeout: constants.LONG_TIMEOUT });
+        //await this.page.waitForTimeout(5000);
+
+
+    }
+
+    async setHeroBannerText(text) {
+        const mainFrame = await this.page.locator(cmsAdminLocators.iframeHierarchy.cmsDesktop.selector).contentFrame();
+        const contentFrame = mainFrame.locator(cmsAdminLocators.iframeHierarchy.contentView.selector).contentFrame();
+        const innerFrame = contentFrame.locator(cmsAdminLocators.iframeHierarchy.frameC.selector).contentFrame();
+        const pageFrame = innerFrame.locator('iframe[name="pageview"]').contentFrame();
+        
+        await pageFrame.locator(cmsAdminLocators.heroBanner.textField.selector).fill(text);
+    }
+
+    async clickApplyButton() {
+        const mainFrame = await this.page.locator(cmsAdminLocators.iframeHierarchy.cmsDesktop.selector).contentFrame();
+        const contentFrame = mainFrame.locator(cmsAdminLocators.iframeHierarchy.contentView.selector).contentFrame();
+        const innerFrame = contentFrame.locator(cmsAdminLocators.iframeHierarchy.frameC.selector).contentFrame();
+        const pageFrame = innerFrame.locator('iframe[name="pageview"]').contentFrame();
+        
+        await pageFrame.getByRole(
+            cmsAdminLocators.heroBanner.applyButton.selector.roleType,
+            { name: cmsAdminLocators.heroBanner.applyButton.selector.roleName }
+        ).click();
+    }
+
+    async getHeroBannerError() {
+        const mainFrame = await this.page.locator(cmsAdminLocators.iframeHierarchy.cmsDesktop.selector).contentFrame();
+        const contentFrame = mainFrame.locator(cmsAdminLocators.iframeHierarchy.contentView.selector).contentFrame();
+        const innerFrame = contentFrame.locator(cmsAdminLocators.iframeHierarchy.frameC.selector).contentFrame();
+        const pageFrame = innerFrame.locator('iframe[name="pageview"]').contentFrame();
+        
+        return pageFrame.locator(cmsAdminLocators.heroBanner.errorMessage.selector).textContent();
+    }
 }
 
 module.exports = CMSAdminPage;

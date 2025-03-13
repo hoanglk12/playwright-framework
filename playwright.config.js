@@ -19,7 +19,7 @@ module.exports = defineConfig({
   use: {
     headless: false,
     slowMo: 0,
-    viewport: { width: 1920, height: 1080 },
+    viewport: { width: 1536, height: 695 },
     actionTimeout: 15000,
     ignoreHTTPSErrors: true,
     video: 'on',
