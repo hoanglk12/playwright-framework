@@ -107,6 +107,10 @@ module.exports = {
     bannerImage: {
       strategy: 'xpath',
       selector: '//style//parent::div[@class="banner__background"]'
+  }, 
+  errorMessage: {
+    strategy: 'css',
+    selector: 'div.field-validation-error'
   },
     textField: {
       strategy: 'css',
@@ -119,11 +123,6 @@ module.exports = {
         roleType: 'button',
         roleName: 'Apply'
       },
-      
-    errorMessage: {
-      strategy: 'css',
-      selector: 'field-validation-error'
-    }
   }
 }
 };
