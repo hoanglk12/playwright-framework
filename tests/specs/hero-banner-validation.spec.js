@@ -2,7 +2,6 @@ const { test, expect } = require('@playwright/test');
 const BasePage = require('../../pages/basePage');
 const CMSAdminPage = require('../../pages/cmsAdminPage');
 const LoginPage = require('../../pages/loginPage');
-const devConfig = require('../../environments/dev.config');
 const constants = require('../../config/constants');
 
 let basePage, cmsAdminPage, loginPage;
@@ -43,5 +42,6 @@ test('Validate hero banner text cannot exceed 160 characters', async () => {
 
     // Verify error message
     const errorMessage = await cmsAdminPage.getHeroBannerError();
-    expect(errorMessage).toContain("The field Text must be a string or array type with a maximum length of '160'");
+    const expectedError = "The field Text must be a string or array type with a maximum length of '160'";
+    expect(errorMessage).toContain(expectedError);
 });

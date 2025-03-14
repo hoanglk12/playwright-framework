@@ -1,7 +1,7 @@
 const { defineConfig } = require('@playwright/test');
-const devConfig = require('./environments/dev.config');
-const prodConfig = require('./environments/prod.config');
-const { clearAllureResults } = require('./utils/helpers');
+// const devConfig = require('./environments/dev.config');
+// const prodConfig = require('./environments/prod.config');
+// const { clearAllureResults } = require('./utils/helpers');
 
 
 module.exports = defineConfig({
@@ -13,16 +13,25 @@ module.exports = defineConfig({
     ['allure-playwright', {
       detail: true,
       outputFolder: 'allure-results',
-      suiteTitle: false
+      suiteTitle: false,
+      environmentInfo: {
+        video_quality: 'Full HD (1920x1080)'
+      }
     }], // Allure reporter
   ],
   use: {
     headless: false,
+    launchOptions: {
+      args: ['--disable-gpu=false'] // Enable GPU
+    },
     slowMo: 0,
-    viewport: { width: 1536, height: 695 },
+    viewport: { width: 1920, height: 1080 },
     actionTimeout: 15000,
     ignoreHTTPSErrors: true,
-    video: 'on',
+    video: {
+      mode: 'on',
+      size: { width: 1920, height: 1080 },
+    },
     screenshot: 'on',
     timeout: 60000,
     //channel: 'chrome'
@@ -32,9 +41,14 @@ module.exports = defineConfig({
       name: 'chromium-dev',
       use: { 
         browserName: 'chromium',
-        channel: 'chrome'
+        channel: 'chrome',
+        launchOptions: {
+          args: [
+            '--force-device-scale-factor=1', // Disable scaling
+            '--high-dpi-support=1'
+          ]
       },
-      
+    }
     },
     /*{
       name: 'edge', // Microsoft Edge browser
