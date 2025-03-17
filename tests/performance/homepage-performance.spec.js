@@ -3,26 +3,31 @@ const performanceHelper = require('../../utils/performanceHelper');
 const devConfig = require('../../environments/dev.config');
 
 test.describe('Performance Tests', () => {
-  test('Homepage performance audit', async () => {
+  test('Homepage performance audit', async ({ page }) => {
+    // Run performance audit
     const results = await performanceHelper.runPerformanceAudit(devConfig.liveSiteUrl);
-    
+
     // Log performance metrics
     console.table(results.metrics);
 
     // Validate against thresholds
     const violations = performanceHelper.validateMetrics(results);
-    
-    // Generate detailed report
+
+    // Generate detailed report if violations exist
     if (violations.length > 0) {
       console.log('Performance threshold violations:');
       console.table(violations);
     }
 
     // Assertions
-    expect(results.metrics.performanceScore).toBeGreaterThanOrEqual(80, 
-      'Overall performance score should be above 80');
-    
-    expect(violations).toHaveLength(0,
-      `Found ${violations.length} performance metrics exceeding thresholds`);
+    expect(results.metrics.performanceScore).toBeGreaterThanOrEqual(
+      80,
+      'Overall performance score should be above 80'
+    );
+
+    expect(violations).toHaveLength(
+      0,
+      `Found ${violations.length} performance metrics exceeding thresholds`
+    );
   });
 });

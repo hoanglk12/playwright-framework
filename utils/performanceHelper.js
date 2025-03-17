@@ -1,5 +1,4 @@
 const { chromium } = require('playwright');
-const ChromeLauncher = require('chrome-launcher');
 const constants = require('../config/constants');
 
 class PerformanceHelper {
@@ -15,11 +14,12 @@ class PerformanceHelper {
   }
 
   async runPerformanceAudit(url, customThresholds = {}, formFactor = 'desktop') {
-    // Dynamically import lighthouse (ESM module)
+    // Dynamically import ESM modules
     const { default: lighthouse } = await import('lighthouse');
-    
+    const chromeLauncher = await import('chrome-launcher');
+
     // Launch Chrome using chrome-launcher
-    const chrome = await ChromeLauncher.launch({
+    const chrome = await chromeLauncher.launch({
       chromeFlags: ['--headless', '--disable-gpu', '--no-sandbox']
     });
 

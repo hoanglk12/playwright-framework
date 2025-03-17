@@ -20,7 +20,7 @@ module.exports = defineConfig({
     }], // Allure reporter
   ],
   use: {
-    headless: false,
+    headless: true,
     launchOptions: {
       args: ['--disable-gpu=false'] // Enable GPU
     },
