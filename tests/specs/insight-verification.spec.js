@@ -2,8 +2,11 @@ import { test, expect } from '@playwright/test';
 import CMSAdminPage from '../../pages/cmsAdminPage';
 import InsightsPage from '../../pages/insightsPage';
 const BasePage = require('../../pages/basePage');
-
+// Determine which environment to use
+const env = process.env.TEST_ENV || 'dev';
+const envConfig = require(`../../environments/${env}.config.js`);
 let basePage;
+
 test.beforeEach(async ({ page }) => {
   basePage = new BasePage(page); // Initialize BasePage
 });
@@ -15,8 +18,8 @@ test.afterEach(async ({}, testInfo) => {
 
 test('Verify articles per page on live site as per CMS configuration', async ({ page }) => {
   
-    const cmsAdmin = new CMSAdminPage(page);
-    const insightsPage = new InsightsPage(page);
+    const cmsAdmin = new CMSAdminPage(page,  envConfig);
+    const insightsPage = new InsightsPage(page,  envConfig);
 
     // Step 1: CMS Admin Operations
     await cmsAdmin.navigateToCMSAdmin();

@@ -3,13 +3,16 @@ const BasePage = require('../../pages/basePage');
 const CMSAdminPage = require('../../pages/cmsAdminPage');
 const LoginPage = require('../../pages/loginPage');
 const constants = require('../../config/constants');
+//require('dotenv').config();
+const env = process.env.TEST_ENV || 'dev';
+const envConfig = require(`../../environments/${env}.config.js`);
 
 let basePage, cmsAdminPage, loginPage;
 
 test.beforeEach(async ({ page }) => {
-    basePage = new BasePage(page);
-    cmsAdminPage = new CMSAdminPage(page);
-    loginPage = new LoginPage(page);
+    basePage = new BasePage(page, envConfig);
+    cmsAdminPage = new CMSAdminPage(page, envConfig);
+    loginPage = new LoginPage(page, envConfig);
 });
 
 test.afterEach(async ({}, testInfo) => {

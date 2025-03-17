@@ -1,11 +1,14 @@
+require('dotenv').config({ path: '.env.dev' });
 module.exports = {
-    baseUrl: 'https://ff-fieldfishercom-qa-cms-a4axd5cbatb7g4eu.uksouth-01.azurewebsites.net/CMSPages/logon.aspx',
+    baseUrl: process.env.CMS_URL,
     users: {
       validUser: {
-        username: 'Hoang.Pham',
-        password: 'P@ssw0rd2024July',
+        username: process.env.VALID_USERNAME,
+        password: process.env.VALID_PASSWORD,
       },
     },
-    liveSiteUrl: 'https://ff-fieldfishercom-qa-web-ekfefjdmh6dbg3f7.uksouth-01.azurewebsites.net',
-    insightsPageUrl: 'https://ff-fieldfishercom-qa-web-ekfefjdmh6dbg3f7.uksouth-01.azurewebsites.net/en/insights'
+    liveSiteUrl: process.env.LIVE_URL,
+    insightsPageUrl: 'https://ff-fieldfishercom-qa-web-ekfefjdmh6dbg3f7.uksouth-01.azurewebsites.net/en/insights',
+    articleLiveUrl: 'https://ff-fieldfishercom-qa-web-ekfefjdmh6dbg3f7.uksouth-01.azurewebsites.net/en/insights/evaluating-online-safety-measures-ofcom-s-economic-discussion-papers-10-and-11'
+
   };

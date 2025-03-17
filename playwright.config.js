@@ -1,11 +1,15 @@
 const { defineConfig } = require('@playwright/test');
-// const devConfig = require('./environments/dev.config');
-// const prodConfig = require('./environments/prod.config');
-// const { clearAllureResults } = require('./utils/helpers');
+require('dotenv').config();
 
+// Determine which environment to use
+const env = process.env.TEST_ENV || 'uat'; // Default to 'dev' if not specified
+console.log(`Using environment: ${env}`);
+
+// Load the appropriate config file
+const envConfig = require(`./environments/${env}.config.js`);
 
 module.exports = defineConfig({
-  timeout: 30 * 1000,
+  timeout: 60 * 1000,
   retries: 1,
   workers: 1,
   reporter: [
@@ -15,12 +19,13 @@ module.exports = defineConfig({
       outputFolder: 'allure-results',
       suiteTitle: false,
       environmentInfo: {
+        environment: env,
         video_quality: 'Full HD (1920x1080)'
       }
     }], // Allure reporter
   ],
   use: {
-    headless: true,
+    headless: false,
     launchOptions: {
       args: ['--disable-gpu=false'] // Enable GPU
     },
@@ -34,11 +39,12 @@ module.exports = defineConfig({
     },
     screenshot: 'on',
     timeout: 60000,
+    baseURL: envConfig.baseUrl,
     //channel: 'chrome'
   },
   projects: [
     {
-      name: 'chromium-dev',
+      name: 'chrome',
       use: { 
         browserName: 'chromium',
         channel: 'chrome',
@@ -50,22 +56,22 @@ module.exports = defineConfig({
       },
     }
     },
-    /*{
+    {
       name: 'edge', // Microsoft Edge browser
       use: { 
         browserName: 'chromium', // Edge is based on Chromium
         channel: 'msedge', // Use the Edge channel
       },
-    },*/
-    /*{
+    },
+    {
       name: 'firefox',
       use: { browserName: 'firefox' },
-    },*/
-    /* {
-       name: 'webkit',
+    },
+     {
+       name: 'safari',
        use: { browserName: 'webkit' },
      },
-    */
+    
   ],
   globalSetup: require.resolve('./global-setup.js'),
 });

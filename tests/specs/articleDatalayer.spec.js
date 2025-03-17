@@ -6,8 +6,11 @@ import constants from '../../config/constants';
 const BasePage = require('../../pages/basePage');
 const CMSAdminPage = require('../../pages/cmsAdminPage');
 const Wait = require('../../utils/Wait');
+const env = process.env.TEST_ENV ||  'dev';
+const envConfig = require(`../../environments/${env}.config.js`);
 
 let basePage;
+
 test.beforeEach(async ({ page }) => {
   basePage = new BasePage(page); // Initialize BasePage
 });
@@ -18,12 +21,12 @@ test.afterEach(async ({}, testInfo) => {
 
 test('Validate article datalayer vs CMS primary category', async ({ page }) => {
   // Initialize Page Objects
-  const articlePage = new ArticlePage(page);
-  const cmsAdminPage = new CMSAdminPage(page);
+  const articlePage = new ArticlePage(page, envConfig);
+  const cmsAdminPage = new CMSAdminPage(page,  envConfig);
   const wait = new Wait(page);
 
     // Step 1: Article Page Operations
-  await articlePage.navigate(articleDataLayerData.article.liveURL);
+  await articlePage.navigate(envConfig.articleLiveUrl);
   const articleTitle = await articlePage.getArticleTitle();
   console.log(`Article Title: ${articleTitle}`);
   const practiceArea = await articlePage.extractPracticeArea();

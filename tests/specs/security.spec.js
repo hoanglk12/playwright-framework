@@ -1,6 +1,9 @@
 const { test, expect } = require('@playwright/test');
 const BasePage = require('../../pages/basePage');
 const devConfig = require('../../environments/dev.config');
+// Determine which environment to use
+const env = process.env.TEST_ENV || 'dev';
+const envConfig = require(`../../environments/${env}.config.js`);
 
 let basePage;
 
@@ -24,7 +27,7 @@ test('Security Headers Check', async ({ page }) => {
 
     // Navigate and get response with timeout
     const response = await Promise.race([
-        page.goto(devConfig.liveSiteUrl, { waitUntil: 'domcontentloaded' }),
+        page.goto(envConfig.liveSiteUrl, { waitUntil: 'domcontentloaded' }),
         new Promise((_, reject) => 
             setTimeout(() => reject(new Error('Navigation timeout')), 30000)
         )

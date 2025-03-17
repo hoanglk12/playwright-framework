@@ -20,5 +20,11 @@ This is a basic Playwright automation testing framework.
    npm run test && npm run report
 5. Run specific test:
    npx playwright test tests/specs/articleDatalayer.spec.js tests/specs/insight-verification.spec.ts tests/specs/login.spec.ts
+6. Update with multiple environments:
+   npm run test:uat
+   npm run test:dev
+   npm run test:uat tests/specs/articleDatalayer.spec.js
+   npm run test:dev tests/specs/articleDatalayer.spec.js
+   npm run test:dev tests/specs/articleDatalayer.spec.js --project=chromium
 
 

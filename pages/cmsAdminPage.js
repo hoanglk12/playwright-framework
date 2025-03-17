@@ -7,6 +7,10 @@ const cmsAdminLocators = require('../locators/cmsAdminLocators');
 const articleDataLayerData = require('../utils/articleDataLayer-data.json');
 const BasePage = require('./basePage');
 const Wait = require('../utils/Wait');
+require('dotenv').config();
+const env = process.env.TEST_ENV || 'dev'; // Default to 'dev' if not specified
+const envConfig = require(`../environments/${env}.config.js`);
+
 
 class CMSAdminPage extends BasePage {
     constructor(page) {
@@ -17,8 +21,8 @@ class CMSAdminPage extends BasePage {
 
     async navigateToCMSAdmin() {
         await this.basePage.navigate(devConfig.baseUrl);
-        await this.basePage.fillElement(loginLocators.usernameField, devConfig.users.validUser.username);
-        await this.basePage.fillElement(loginLocators.passwordField, devConfig.users.validUser.password);
+        await this.basePage.fillElement(loginLocators.usernameField, envConfig.users.validUser.username);
+        await this.basePage.fillElement(loginLocators.passwordField, envConfig.users.validUser.password);
         await this.basePage.clickElement(loginLocators.loginButton);
         await this.wait.forLoadState('networkidle', constants.LONG_TIMEOUT); // Use the method from Wait
     }
