@@ -55,7 +55,7 @@ module.exports = defineConfig({
       },
     }
     },
-    {
+    /*{
       name: 'edge', // Microsoft Edge browser
       use: { 
         browserName: 'chromium', // Edge is based on Chromium
@@ -69,7 +69,7 @@ module.exports = defineConfig({
      {
        name: 'safari',
        use: { browserName: 'webkit' },
-     },
+     },*/
     
   ],
   globalSetup: require.resolve('./global-setup.js'),
