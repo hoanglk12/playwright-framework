@@ -45,6 +45,7 @@ test('Validate hero banner text cannot exceed 160 characters', async () => {
 
     // Verify error message
     const errorMessage = await cmsAdminPage.getHeroBannerError();
+    console.log('Error Message: ', errorMessage);
     const expectedError = "The field Text must be a string or array type with a maximum length of '160'";
     expect(errorMessage).toContain(expectedError);
 });

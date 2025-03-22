@@ -104,13 +104,7 @@ class CMSAdminPage extends BasePage {
         const pageFrame = innerFrame.locator('iframe[name="pageview"]').contentFrame();
         await pageFrame.locator(cmsAdminLocators.heroBanner.bannerImage.selector).click();
         await pageFrame.locator('kentico-widget-header').filter({ hasText: 'Banner, Hero' }).locator('a').nth(1).click();
-        //await this.page.waitForTimeout(5000);
-        
-        //await pageFrame.locator(cmsAdminLocators.heroBanner.wheelIcon.selector).click();
-        //await pageFrame.locator('#host-element >> a').click({ timeout: constants.LONG_TIMEOUT });
-        //await this.page.waitForTimeout(5000);
-
-
+       
     }
 
     async setHeroBannerText(text) {

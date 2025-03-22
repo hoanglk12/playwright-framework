@@ -72,9 +72,14 @@ jobs:
         id: set-matrix
         run: |
           if [[ "${{ env.BROWSER }}" == "all" ]]; then
-            echo "matrix={\"browser\":[\"chromium\",\"firefox\",\"webkit\"]}" >> $GITHUB_OUTPUT
+            echo "matrix={\"browser\":[\"chrome\",\"firefox\",\"webkit\"]}" >> $GITHUB_OUTPUT
           else
-            echo "matrix={\"browser\":[\"${{ env.BROWSER }}\"]}" >> $GITHUB_OUTPUT
+            # Map "chromium" to "chrome" if needed
+            if [[ "${{ env.BROWSER }}" == "chromium" ]]; then
+              echo "matrix={\"browser\":[\"chrome\"]}" >> $GITHUB_OUTPUT
+            else
+              echo "matrix={\"browser\":[\"${{ env.BROWSER }}\"]}" >> $GITHUB_OUTPUT
+            fi
           fi
 
   lint:
@@ -153,14 +158,13 @@ jobs:
       - name: Run Playwright tests
         run: |
           if [[ "${{ env.TEST_SUITE }}" == "smoke" ]]; then
-            npx playwright test --project=${{ matrix.browser }} --grep @smoke
+            npx playwright test --project=${{ matrix.browser }} --grep "@smoke"
           elif [[ "${{ env.TEST_SUITE }}" == "regression" ]]; then
-            npx playwright test --project=${{ matrix.browser }} --grep @regression
+            npx playwright test --project=${{ matrix.browser }} --grep "@regression"
           elif [[ "${{ env.TEST_SUITE }}" == "visual" ]]; then
-            npx playwright test --project=${{ matrix.browser }} --grep @visual
+            npx playwright test --project=${{ matrix.browser }} --grep "@visual"
           else
             npx playwright test --project=${{ matrix.browser }}
-          fi
         env:
           NODE_ENV: ${{ env.TEST_ENV }}
           TEST_ENV: ${{ env.TEST_ENV }}
@@ -221,7 +225,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: all-artifacts/playwright-report-chromium
+          publish_dir: all-artifacts/playwright-report-chrome
           destination_dir: reports/latest
       
       # Example: Notify on Slack if tests fail
@@ -231,8 +235,8 @@ jobs:
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,workflow
-        # env:
-        #   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   security-scan:
     name: Security Scan

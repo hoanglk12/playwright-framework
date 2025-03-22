@@ -55,22 +55,14 @@ module.exports = defineConfig({
       },
     }
     },
-    /*{
-      name: 'edge', // Microsoft Edge browser
-      use: { 
-        browserName: 'chromium', // Edge is based on Chromium
-        channel: 'msedge', // Use the Edge channel
-      },
-    },
     {
       name: 'firefox',
       use: { browserName: 'firefox' },
     },
-     {
-       name: 'safari',
-       use: { browserName: 'webkit' },
-     },*/
-    
+    {
+      name: 'webkit',
+      use: { browserName: 'webkit' },
+    },
   ],
   globalSetup: require.resolve('./global-setup.js'),
 });
