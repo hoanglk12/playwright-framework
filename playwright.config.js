@@ -2,7 +2,7 @@ const { defineConfig } = require('@playwright/test');
 require('dotenv').config();
 
 // Determine which environment to use
-const env = process.env.TEST_ENV || 'uat'; // Default to 'dev' if not specified
+const env = process.env.TEST_ENV || 'dev'; // Default to 'dev' if not specified
 console.log(`Using environment: ${env}`);
 
 // Load the appropriate config file
@@ -38,7 +38,6 @@ module.exports = defineConfig({
       size: { width: 1920, height: 1080 },
     },
     screenshot: 'on',
-    timeout: 60000,
     baseURL: envConfig.baseUrl,
     //channel: 'chrome'
   },
