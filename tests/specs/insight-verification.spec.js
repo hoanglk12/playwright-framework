@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test';
-import CMSAdminPage from '../../pages/cmsAdminPage';
-import InsightsPage from '../../pages/insightsPage';
+const { test, expect } = require('@playwright/test');
+const CMSAdminPage = require('../../pages/cmsAdminPage');
+const InsightsPage = require('../../pages/insightsPage');
 const BasePage = require('../../pages/basePage');
 // Determine which environment to use
 const env = process.env.TEST_ENV || 'dev';

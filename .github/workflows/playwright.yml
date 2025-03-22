@@ -1,27 +1,274 @@
-name: Playwright Tests
+name: Playwright Test Automation
+
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master, develop]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master, develop]
+  schedule:
+    # Run tests automatically at 2 AM UTC every day
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to run tests against'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - uat
+          - prod
+      browser:
+        description: 'Browser to run tests on'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - chromium
+          - firefox
+          - webkit
+      test_suite:
+        description: 'Test suite to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - smoke
+          - regression
+          - visual
+
+env:
+  NODE_VERSION: '20'
+  # Default environment is dev unless specified otherwise
+  TEST_ENV: ${{ github.event.inputs.environment || 'dev' }}
+  # Default to all browsers unless specified otherwise
+  BROWSER: ${{ github.event.inputs.browser || 'all' }}
+  # Default to all tests unless specified otherwise
+  TEST_SUITE: ${{ github.event.inputs.test_suite || 'all' }}
+
 jobs:
-  test:
-    timeout-minutes: 60
+  prepare:
+    name: Prepare Test Environment
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Set browser matrix
+        id: set-matrix
+        run: |
+          if [[ "${{ env.BROWSER }}" == "all" ]]; then
+            echo "matrix={\"browser\":[\"chromium\",\"firefox\",\"webkit\"]}" >> $GITHUB_OUTPUT
+          else
+            echo "matrix={\"browser\":[\"${{ env.BROWSER }}\"]}" >> $GITHUB_OUTPUT
+          fi
+
+  lint:
+    name: Lint Code
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Lint code
+        run: npm run lint || echo "Linting failed but continuing"
+
+  test:
+    name: Run Tests (${{ matrix.browser }})
+    needs: [prepare, lint]
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJson(needs.prepare.outputs.matrix)}}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      # Use Playwright's cache action to speed up browser installation
+      - name: Get Playwright cache
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install Playwright browsers if cache miss
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+      
+      - name: Install Playwright browser dependencies only if cache hit
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps ${{ matrix.browser }}
+      
+      # Set up environment specific configurations
+      - name: Configure environment
+        run: |
+          echo "Setting up environment variables for ${{ env.TEST_ENV }}"
+          if [[ "${{ env.TEST_ENV }}" == "prod" ]]; then
+            echo "LIVE_URL=${{ secrets.PROD_URL }}" >> $GITHUB_ENV
+            echo "API_KEY=${{ secrets.PROD_API_KEY }}" >> $GITHUB_ENV
+          elif [[ "${{ env.TEST_ENV }}" == "qa" ]]; then
+            echo "LIVE_URL=${{ secrets.QA_URL }}" >> $GITHUB_ENV
+            echo "API_KEY=${{ secrets.QA_API_KEY }}" >> $GITHUB_ENV
+          else
+            echo "LIVE_URL=${{ secrets.DEV_URL || 'https://ff-fieldfishercom-qa-web-ekfefjdmh6dbg3f7.uksouth-01.azurewebsites.net/' }}" >> $GITHUB_ENV
+            echo "API_KEY=${{ secrets.DEV_API_KEY || 'test-api-key' }}" >> $GITHUB_ENV
+          fi
+      
+      # Run appropriate test suite
+      - name: Run Playwright tests
+        run: |
+          if [[ "${{ env.TEST_SUITE }}" == "smoke" ]]; then
+            npx playwright test --project=${{ matrix.browser }} --grep @smoke
+          elif [[ "${{ env.TEST_SUITE }}" == "regression" ]]; then
+            npx playwright test --project=${{ matrix.browser }} --grep @regression
+          elif [[ "${{ env.TEST_SUITE }}" == "visual" ]]; then
+            npx playwright test --project=${{ matrix.browser }} --grep @visual
+          else
+            npx playwright test --project=${{ matrix.browser }}
+          fi
+        env:
+          NODE_ENV: ${{ env.TEST_ENV }}
+          TEST_ENV: ${{ env.TEST_ENV }}
+          BROWSER: ${{ matrix.browser }}
+      
+      # Generate Allure report
+      - name: Generate Allure Report
+        if: always()
+        run: |
+          npm install -g allure-commandline
+          npx allure generate ./allure-results --clean
+      
+      # Upload test results and screenshots
+      - name: Upload Playwright test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.browser }}
+          path: playwright-report/
+          retention-days: 30
+      
+      # Upload Allure report
+      - name: Upload Allure report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report-${{ matrix.browser }}
+          path: allure-report/
+          retention-days: 30
+      
+      # Upload screenshots and videos for failed tests
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts-${{ matrix.browser }}
+          path: |
+            test-results/
+            screenshots/
+          retention-days: 7
+
+  publish-report:
+    name: Publish Test Report
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-artifacts
+      
+      # Example: Publish to GitHub Pages
+      - name: Publish to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: all-artifacts/playwright-report-chromium
+          destination_dir: reports/latest
+      
+      # Example: Notify on Slack if tests fail
+      - name: Notify on Slack
+        uses: 8398a7/action-slack@v3
+        if: failure()
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,workflow
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Run dependency security scan
+        uses: snyk/actions/node@master
+        with:
+          args: --severity-threshold=high
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN || '' }}
+        continue-on-error: true
+
+  lighthouse:
+    name: Lighthouse Performance Check
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Lighthouse Check
+        uses: foo-software/lighthouse-check-action@master
+        with:
+          urls: ${{ env.LIVE_URL }}
+          outputDirectory: ./lighthouse-results
+          budgetPath: ./lighthouse-budget.json
+        continue-on-error: true
+      
+      - name: Upload Lighthouse results
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-results
+          path: lighthouse-results/
+          retention-days: 14
