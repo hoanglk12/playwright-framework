@@ -74,7 +74,6 @@ jobs:
           if [[ "${{ env.BROWSER }}" == "all" ]]; then
             echo "matrix={\"browser\":[\"chrome\",\"firefox\",\"webkit\"]}" >> $GITHUB_OUTPUT
           else
-            # Map "chromium" to "chrome" if needed
             if [[ "${{ env.BROWSER }}" == "chromium" ]]; then
               echo "matrix={\"browser\":[\"chrome\"]}" >> $GITHUB_OUTPUT
             else
@@ -165,6 +164,7 @@ jobs:
             npx playwright test --project=${{ matrix.browser }} --grep "@visual"
           else
             npx playwright test --project=${{ matrix.browser }}
+          fi
         env:
           NODE_ENV: ${{ env.TEST_ENV }}
           TEST_ENV: ${{ env.TEST_ENV }}
