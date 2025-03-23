@@ -5,15 +5,15 @@ const BasePage = require('../../pages/basePage');
 
 // Strategy Pattern - Environment configuration
 const env = process.env.TEST_ENV || 'dev';
-//const envConfig = require(`../../environments/${env}.config.js`);
+const envConfig = require(`../../environments/${env}.config.js`);
 
 // Builder Pattern for test configuration
 class TestConfigBuilder {
     constructor() {
         this.config = {
             urls: {
-                insights: 'https://ff-fieldfishercom-qa-web-ekfefjdmh6dbg3f7.uksouth-01.azurewebsites.net/en/insights',
-                people: 'https://ff-fieldfishercom-qa-web-ekfefjdmh6dbg3f7.uksouth-01.azurewebsites.net/en/people'
+                insights: envConfig.insightsPageUrl,
+                people: envConfig.peopleListingPageUrl
             },
             expectations: {
                 lazyLoading: false

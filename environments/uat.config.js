@@ -9,5 +9,6 @@ module.exports = {
     },
     liveSiteUrl: process.env.LIVE_URL,
     insightsPageUrl: 'https://ff-fieldfishercom-uat-web.fieldfisher.com/en/insights',
-    articleLiveUrl: 'https://ff-fieldfishercom-uat-web.fieldfisher.com/en/insights/exploring-the-future-of-aviation-automation-with-simon-meakins'
+    articleLiveUrl: 'https://ff-fieldfishercom-uat-web.fieldfisher.com/en/insights/exploring-the-future-of-aviation-automation-with-simon-meakins',
+    peopleListingPageUrl: 'https://ff-fieldfishercom-uat-web.fieldfisher.com/en/people',
   };

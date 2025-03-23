@@ -28,3 +28,60 @@ This is a basic Playwright automation testing framework.
    npm run test:dev tests/specs/articleDatalayer.spec.js --project=chromium
 
 
+
+
+```
+playwright-framework
+├─ check-chromium-version.js
+├─ config
+│  └─ constants.js
+├─ environments
+│  ├─ dev.config.js
+│  ├─ prod.config.js
+│  └─ uat.config.js
+├─ fixtures
+│  └─ custom-fixtures.js
+├─ global-setup.js
+├─ locators
+│  ├─ articleLocators.js
+│  ├─ cmsAdminLocators.js
+│  ├─ homeLocators.js
+│  ├─ insightsLocators.js
+│  ├─ loginLocators.js
+│  └─ peopleLocators.js
+├─ package-lock.json
+├─ package.json
+├─ pages
+│  ├─ articlePage.js
+│  ├─ basePage.js
+│  ├─ cmsAdminPage.js
+│  ├─ homePage.js
+│  ├─ insightsPage.js
+│  ├─ loginPage.js
+│  └─ peoplePage.js
+├─ playwright.config.js
+├─ README.md
+├─ scripts
+│  └─ upscale-videos.sh
+├─ tests
+│  ├─ performance
+│  │  ├─ homepage-performance.spec.js
+│  │  └─ page-load-time.spec.js
+│  └─ specs
+│     ├─ articleDatalayer.spec.js
+│     ├─ banner-image-loading.spec.js
+│     ├─ footer-social-icons.spec.js
+│     ├─ hero-banner-validation.spec.js
+│     ├─ insight-verification.spec.js
+│     ├─ login.spec.js
+│     └─ security.spec.js
+└─ utils
+   ├─ articleDataLayer-data.json
+   ├─ cmsAdminData.json
+   ├─ helpers.js
+   ├─ login-data.json
+   ├─ performanceHelper.js
+   ├─ securityHelper.js
+   └─ Wait.js
+
+```

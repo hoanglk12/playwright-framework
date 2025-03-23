@@ -9,7 +9,6 @@ module.exports = {
     },
     liveSiteUrl: process.env.LIVE_URL,
     insightsPageUrl: 'https://ff-fieldfishercom-qa-web-ekfefjdmh6dbg3f7.uksouth-01.azurewebsites.net/en/insights',
-    articleLiveUrl: 'https://ff-fieldfishercom-qa-web-ekfefjdmh6dbg3f7.uksouth-01.azurewebsites.net/en/insights/evaluating-online-safety-measures-ofcom-s-economic-discussion-papers-10-and-11'
-
-
-  };
+    articleLiveUrl: 'https://ff-fieldfishercom-qa-web-ekfefjdmh6dbg3f7.uksouth-01.azurewebsites.net/en/insights/evaluating-online-safety-measures-ofcom-s-economic-discussion-papers-10-and-11',
+    peopleListingPageUrl: 'https://ff-fieldfishercom-qa-web-ekfefjdmh6dbg3f7.uksouth-01.azurewebsites.net/en/people',
+};

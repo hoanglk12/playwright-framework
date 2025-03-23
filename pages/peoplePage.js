@@ -18,7 +18,7 @@ class PeoplePage extends BasePage {
      * @returns {PeoplePage} - For method chaining (Fluent Interface Pattern)
      */
     async navigateToPeoplePage() {
-        await this.basePage.navigate('https://ff-fieldfishercom-qa-web-ekfefjdmh6dbg3f7.uksouth-01.azurewebsites.net/en/people');
+        await this.basePage.navigate(envConfig.peopleListingPageUrl);
         await this.wait.forLoadState('domcontentloaded', constants.LONG_TIMEOUT);
         return this;
     }
