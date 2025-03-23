@@ -25,6 +25,47 @@ class InsightsPage extends BasePage {
         return elements.length;
         
     }
+/**
+     * Click on a random article card
+     * @returns {Promise<string>} The title of the clicked article
+     */
+async clickRandomArticleCard() {
+    await this.page.waitForSelector(insightsLocators.articleCard.selector, { state: 'visible' });
+    const articleCards = await this.page.$$(insightsLocators.articleCard.selector);
+    
+    if (articleCards.length === 0) {
+        throw new Error('No article cards found on the page');
+    }
+    
+    // Select a random article card
+    const randomIndex = Math.floor(Math.random() * articleCards.length);
+    const selectedCard = articleCards[randomIndex];
+    
+    // Get the title before clicking
+    const titleElement = await selectedCard.$(insightsLocators.articleTitle.selector);
+    const articleTitle = await titleElement.textContent();
+    
+    // Click the card
+    await selectedCard.click();
+    await this.wait.forLoadState('domcontentloaded', constants.LONG_TIMEOUT);
+    
+    return articleTitle;
+}
+
+/**
+ * Check if inner banner image has lazy loading
+ * @returns {Promise<{hasLazyLoading: boolean, loadingAttribute: string|null}>}
+ */
+async checkInnerBannerImageLazyLoading() {
+    await this.page.waitForSelector(insightsLocators.innerBannerImage.selector, { state: 'visible' });
+    const bannerImage = await this.page.$(insightsLocators.innerBannerImage.selector);
+    const loadingAttribute = await bannerImage.getAttribute('loading');
+    
+    return {
+        hasLazyLoading: loadingAttribute === 'lazy',
+        loadingAttribute: loadingAttribute
+    };
+}
 
    
 }
