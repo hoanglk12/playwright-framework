@@ -8,7 +8,7 @@
   "scripts": {
     "test": "npx playwright test",
     "test:headed": "npx playwright test --headed",
-    "test:chrome": "npx playwright test --project=chromium",
+    "test:chrome": "npx playwright test --project=chrome",
     "report": "npx allure generate ./allure-results --clean && npx allure open",
     "posttest": "sh scripts/upscale-videos.sh",
     "test:dev": "cross-env TEST_ENV=dev npx playwright test",

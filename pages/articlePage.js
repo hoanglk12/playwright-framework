@@ -13,7 +13,7 @@ class ArticlePage extends BasePage {
 
   async getArticleTitle() {
     await this.wait.forLoadState('networkidle', constants.LONG_TIMEOUT);
-    return (await this.page.locator(articleLocators.ariticleTitle.selector).textContent()).trim();
+    return (await this.page.locator(articleLocators.articleTitle.selector).textContent()).trim();
   }
 
   async extractPracticeArea() {
