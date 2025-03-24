@@ -4,7 +4,6 @@ const Wait = require('../utils/Wait');
 const constants = require('../config/constants');
 
 
-
 class ArticlePage extends BasePage {
   constructor(page) {
     super(page);
