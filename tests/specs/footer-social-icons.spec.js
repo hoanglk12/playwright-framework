@@ -6,52 +6,43 @@ const env = process.env.TEST_ENV || 'dev';
 const envConfig = require(`../../environments/${env}.config.js`);
 
 // Import the Charts tool
-const { Charts_generatesCharts } = require('@playwright/test');
+const chartGenerator = require('../../utils/chartGenerator');
 
-let basePage;
-let logger;
+let basePage, homePage, logger;
 
-test.beforeEach(async ({ page }) => {
-  logger = Logger;
-  basePage = new BasePage(page);
-
+// Enhanced Test Setup with Robust Initialization
+test.beforeEach(async ({ page }, testInfo) => {
+  // Defensive initialization with error handling
   try {
-    logger.info('Test Setup', {
-      environment: env,
-      testFile: 'footer-social-icons.spec.js'
-    });
-  } catch (error) {
-    logger.error('Error in test setup', { 
-      error: error.message,
-      stack: error.stack 
-    });
-    throw error;
+      // Ensure logger is always initialized
+      logger = Logger || console;
+
+      // Initialize pages with error checking
+      basePage = new BasePage(page, envConfig);
+      homePage = new HomePage(page, envConfig);
+      //loginPage = new LoginPage(page, envConfig);
+
+      // Comprehensive test setup logging
+      logger.info('Test Setup', {
+          environment: envConfig.liveSiteUrl,
+          testFile: testInfo.file,
+          testName: testInfo.title
+      });
+  } catch (setupError) {
+      // Fallback error handling
+      const errorLog = logger.error || console.error;
+      errorLog('Test Setup Failed', {
+          error: setupError.message,
+          stack: setupError.stack
+      });
+      throw setupError;
   }
 });
 
-test.afterEach(async ({}, testInfo) => {
-  try {
-    await basePage.closeBrowserOnFailure(testInfo);
-
-    logger.info('Test Completed', {
-      testName: testInfo.title,
-      status: testInfo.status,
-      duration: testInfo.duration
-    });
-  } catch (error) {
-    logger.error('Error in test teardown', { 
-      error: error.message,
-      stack: error.stack 
-    });
-  }
-});
-
-test('Verify footer social icons have valid dimensions', async ({ page }, testInfo) => {
+test('Verify footer social icons have valid dimensions', async ( {}, testInfo) => {
   try {
     logger.info('Starting footer social icons dimension validation');
 
-    const homePage = new HomePage(page);
-    
     logger.info('Navigating to homepage', { 
       url: envConfig.liveSiteUrl 
     });
@@ -82,30 +73,31 @@ test('Verify footer social icons have valid dimensions', async ({ page }, testIn
     // Log the table for console output
     logger.info('Social Icons Dimensions Table:\n' + dimensionsTable.join('\n'));
 
-    // Optional: Generate a chart using the Charts tool
+    // Generate charts using Chart.js
     try {
-      const chartParam = `Bar chart showing social icon dimensions. 
-        Labels: Icon 1, Icon 2, Icon 3, Icon 4. 
-        Width data: ${iconsDimensions.map(d => d.width).join(', ')}. 
-        Height data: ${iconsDimensions.map(d => d.height).join(', ')}`;
-
-      const chartResponse = await Charts_generatesCharts({
-        param: chartParam
-      });
-
-      // Optionally attach the chart to the test report
-      if (chartResponse) {
+        logger.info('Generating dimension charts');
+        
+        // Generate and attach the dimensions chart
+        const dimensionsChartBuffer = await chartGenerator.generateDimensionsChart(iconsDimensions);
         await testInfo.attach('Social Icons Dimensions Chart', {
-          body: chartResponse,
-          contentType: 'image/png'
+            body: dimensionsChartBuffer,
+            contentType: 'image/png'
         });
-      }
-    } catch (chartError) {
-      logger.warn('Chart generation failed', {
-        error: chartError.message
-      });
-    }
 
+        // Generate and attach the aspect ratio chart
+        const aspectRatioChartBuffer = await chartGenerator.generateAspectRatioChart(iconsDimensions);
+        await testInfo.attach('Social Icons Aspect Ratio Chart', {
+            body: aspectRatioChartBuffer,
+            contentType: 'image/png'
+        });
+
+        logger.info('Charts generated successfully');
+    } catch (error) {
+        logger.error('Chart generation failed', {
+            error: error.message,
+            stack: error.stack
+        });
+    }
     // Verify that exactly 4 social icons exist
     expect(
       iconsDimensions.length, 

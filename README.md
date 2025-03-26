@@ -30,8 +30,17 @@ This is a basic Playwright automation testing framework.
 
 
 
+
 ```
 playwright-framework
+├─ .idea
+│  ├─ inspectionProfiles
+│  │  └─ Project_Default.xml
+│  ├─ libraries
+│  ├─ modules.xml
+│  ├─ playwright-framework.iml
+│  ├─ vcs.xml
+│  └─ workspace.xml
 ├─ check-chromium-version.js
 ├─ config
 │  └─ constants.js
@@ -45,16 +54,21 @@ playwright-framework
 ├─ locators
 │  ├─ articleLocators.js
 │  ├─ cmsAdminLocators.js
+│  ├─ errorLocators.js
 │  ├─ homeLocators.js
 │  ├─ insightsLocators.js
 │  ├─ loginLocators.js
 │  └─ peopleLocators.js
+├─ logs
+│  ├─ cms-admin.log
+│  └─ hero-banner-validation.log
 ├─ package-lock.json
 ├─ package.json
 ├─ pages
 │  ├─ articlePage.js
 │  ├─ basePage.js
 │  ├─ cmsAdminPage.js
+│  ├─ errorPage.js
 │  ├─ homePage.js
 │  ├─ insightsPage.js
 │  ├─ loginPage.js
@@ -70,6 +84,7 @@ playwright-framework
 │  └─ specs
 │     ├─ articleDatalayer.spec.js
 │     ├─ banner-image-loading.spec.js
+│     ├─ error-page.spec.js
 │     ├─ footer-social-icons.spec.js
 │     ├─ hero-banner-validation.spec.js
 │     ├─ insight-verification.spec.js
@@ -79,6 +94,7 @@ playwright-framework
    ├─ articleDataLayer-data.json
    ├─ cmsAdminData.json
    ├─ helpers.js
+   ├─ logger.js
    ├─ login-data.json
    ├─ performanceHelper.js
    ├─ securityHelper.js

@@ -20,3 +20,6 @@ node_modules/
 # Playwright logs
 playwright-logs.log
 global-setup.log
+
+#Logging
+/logs/**
