@@ -1,5 +1,20 @@
 const { defineConfig } = require('@playwright/test');
 require('dotenv').config();
+const winston = require('winston');
+
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(({ level, message, timestamp }) => {
+      return `[${timestamp}] ${level}: ${message}`;
+    })
+  ),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: 'playwright-logs.log' })
+  ]
+});
 
 // Determine which environment to use
 const env = process.env.TEST_ENV || 'dev'; // Default to 'dev' if not specified
@@ -64,5 +79,7 @@ module.exports = defineConfig({
       use: { browserName: 'webkit' },
     },
   ],
-  globalSetup: require.resolve('./global-setup.js'),
+  
+  globalSetup: './global-setup.js',
+  
 });

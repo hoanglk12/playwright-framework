@@ -1,14 +1,22 @@
-# Playwright
+# Other common Playwright artifacts
 node_modules/
 /test-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+#Allure result files
 /allure-report/
 /allure-results/**
 /test-results/
 /allure-report/**
 /data/
 /data/**
+
+# Env
 .env
 
+
+# Playwright logs
+playwright-logs.log
+global-setup.log
