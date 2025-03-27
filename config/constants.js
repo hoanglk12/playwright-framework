@@ -10,7 +10,7 @@ module.exports = {
   
     // Environment-specific values
     BASE_URL: process.env.BASE_URL || 'https://example.com',
-  
+    
     // Browser settings
     BROWSER: process.env.BROWSER || 'chromium', // chromium, firefox, webkit
     HEADLESS: process.env.HEADLESS !== 'false', // true by default
@@ -19,5 +19,16 @@ module.exports = {
     DEFAULT_USER: {
       username: 'testuser',
       password: 'testpassword123'
+    },
+    BASE_API_URL: 'https://reqres.in/api',
+    ENDPOINTS: {
+      LOGIN: '/login',
+      USERS: '/users',
+      REGISTER: '/register'
+    },
+    TEST_CONFIGURATIONS: {
+      TIMEOUT: 10000,
+      RETRY_ATTEMPTS: 2
     }
+    
   };

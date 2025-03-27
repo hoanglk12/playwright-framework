@@ -14,7 +14,9 @@
     "posttest": "sh scripts/upscale-videos.sh",
     "test:dev": "cross-env TEST_ENV=dev npx playwright test",
     "test:uat": "cross-env TEST_ENV=uat npx playwright test",
-    "test:prod": "cross-env TEST_ENV=prod npx playwright test"
+    "test:prod": "cross-env TEST_ENV=prod npx playwright test",
+    "test:api": "npx playwright test tests/api",
+    "test:api:debug": "npx playwright test tests/api --debug"
   },
   "keywords": [],
   "author": "Hoang Pham",
@@ -39,6 +41,7 @@
     "winston": "^3.17.0"
   },
   "dependencies": {
+    "axios": "^1.8.4",
     "chrome-launcher": "^1.1.2",
     "faker": "^5.5.3",
     "fs-extra": "^11.3.0",

@@ -1,0 +1,10 @@
+{
+    "validUser": {
+      "email": "eve.holt@reqres.in",
+      "password": "cityslicka"
+    },
+    "invalidUser": {
+      "email": "invalid@example.com",
+      "password": "wrongpassword"
+    }
+    }

@@ -101,3 +101,72 @@ playwright-framework
    └─ Wait.js
 
 ```
+```
+playwright-framework
+├─ .idea
+│  ├─ inspectionProfiles
+│  │  └─ Project_Default.xml
+│  ├─ libraries
+│  ├─ modules.xml
+│  ├─ playwright-framework.iml
+│  ├─ vcs.xml
+│  └─ workspace.xml
+├─ check-chromium-version.js
+├─ config
+│  └─ constants.js
+├─ environments
+│  ├─ dev.config.js
+│  ├─ prod.config.js
+│  └─ uat.config.js
+├─ fixtures
+│  └─ custom-fixtures.js
+├─ global-setup.js
+├─ locators
+│  ├─ articleLocators.js
+│  ├─ cmsAdminLocators.js
+│  ├─ errorLocators.js
+│  ├─ homeLocators.js
+│  ├─ insightsLocators.js
+│  ├─ loginLocators.js
+│  └─ peopleLocators.js
+├─ package-lock.json
+├─ package.json
+├─ pages
+│  ├─ articlePage.js
+│  ├─ basePage.js
+│  ├─ cmsAdminPage.js
+│  ├─ errorPage.js
+│  ├─ homePage.js
+│  ├─ insightsPage.js
+│  ├─ loginPage.js
+│  └─ peoplePage.js
+├─ playwright.config.js
+├─ README.md
+├─ scripts
+│  ├─ clean-log.js
+│  └─ upscale-videos.sh
+├─ tests
+│  ├─ performance
+│  │  ├─ homepage-performance.spec.js
+│  │  └─ page-load-time.spec.js
+│  └─ specs
+│     ├─ articleDatalayer.spec.js
+│     ├─ banner-image-loading.spec.js
+│     ├─ error-page.spec.js
+│     ├─ footer-social-icons.spec.js
+│     ├─ hero-banner-validation.spec.js
+│     ├─ insight-verification.spec.js
+│     ├─ login.spec.js
+│     └─ security.spec.js
+└─ utils
+   ├─ articleDataLayer-data.json
+   ├─ chartGenerator.js
+   ├─ cmsAdminData.json
+   ├─ helpers.js
+   ├─ logger.js
+   ├─ login-data.json
+   ├─ performanceHelper.js
+   ├─ securityHelper.js
+   └─ Wait.js
+
+```
