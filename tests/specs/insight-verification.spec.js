@@ -8,13 +8,7 @@ const env = process.env.TEST_ENV || 'dev';
 const envConfig = require(`../../environments/${env}.config.js`);
 let basePage, cmsAdmin, insightsPage, logger;
 
-// test.beforeEach(async ({ page }) => {
-//   basePage = new BasePage(page); // Initialize BasePage
-// });
 
-// test.afterEach(async ({}, testInfo) => {
-//   await basePage.closeBrowserOnFailure(testInfo); // Call closeBrowserOnFailure after each test
-// });
  // Enhanced Test Setup with Robust Initialization
     test.beforeEach(async ({ page }, testInfo) => {
         // Defensive initialization with error handling
@@ -44,10 +38,46 @@ let basePage, cmsAdmin, insightsPage, logger;
         }
     });
 
-test('Verify articles per page on live site as per CMS configuration', async ({ page }) => {
+  // Robust Test Teardown
+  test.afterEach(async ({}, testInfo) => {
+    const logSafely = (level, message, metadata = {}) => {
+        try {
+            // Prioritize logger methods, fallback to console
+            if (logger && typeof logger[level] === 'function') {
+                logger[level](message, metadata);
+            } else {
+                console[level](JSON.stringify({ message, ...metadata }, null, 2));
+            }
+        } catch {
+            console.error('Logging failed', { message, metadata });
+        }
+    };
+
+    try {
+        // Safe browser closure
+        if (basePage && typeof basePage.closeBrowserOnFailure === 'function') {
+            await basePage.closeBrowserOnFailure(testInfo);
+        }
+
+        // Log test completion
+        logSafely('info', 'Test Completed', {
+            testName: testInfo.title,
+            status: testInfo.status,
+            duration: testInfo.duration
+        });
+    } catch (teardownError) {
+        // Comprehensive error logging
+        logSafely('error', 'Test Teardown Failed', {
+            error: teardownError.message,
+            stack: teardownError.stack
+        });
+    }
+});
+
+test('Verify articles per page on live site as per CMS configuration', async ({ }) => {
   
-    const cmsAdmin = new CMSAdminPage(page,  envConfig);
-    const insightsPage = new InsightsPage(page,  envConfig);
+    //const cmsAdmin = new CMSAdminPage(page,  envConfig);
+    //const insightsPage = new InsightsPage(page,  envConfig);
 
     // Step 1: CMS Admin Operations
     await cmsAdmin.navigateToCMSAdmin();
