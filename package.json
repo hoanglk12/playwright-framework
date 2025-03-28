@@ -15,8 +15,10 @@
     "test:dev": "cross-env TEST_ENV=dev npx playwright test",
     "test:uat": "cross-env TEST_ENV=uat npx playwright test",
     "test:prod": "cross-env TEST_ENV=prod npx playwright test",
-    "test:api": "npx playwright test tests/api",
-    "test:api:debug": "npx playwright test tests/api --debug"
+    "test:api": "playwright test tests/api",
+    "test:ui": "playwright test tests/ui",
+    "test:report": "npx playwright show-report",
+    "test:debug": "npx playwright test --debug"
   },
   "keywords": [],
   "author": "Hoang Pham",
@@ -24,7 +26,8 @@
   "devDependencies": {
     "@cucumber/cucumber": "^11.2.0",
     "@cucumber/pretty-formatter": "^1.0.1",
-    "@playwright/test": "^1.50.1",
+    "@faker-js/faker": "^9.6.0",
+    "@playwright/test": "^1.51.1",
     "@types/node": "^22.13.5",
     "allure-commandline": "^2.32.2",
     "allure-playwright": "^3.2.0",
@@ -32,7 +35,7 @@
     "chartjs-node-canvas": "^5.0.0",
     "cross-env": "^7.0.3",
     "cucumber-html-reporter": "^7.2.0",
-    "dotenv": "^16.0.3",
+    "dotenv": "^16.4.7",
     "eslint": "^8.0.0",
     "eslint-plugin-playwright": "^0.12.0",
     "fluent-ffmpeg": "^2.1.2",

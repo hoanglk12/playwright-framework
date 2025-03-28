@@ -16,19 +16,25 @@ module.exports = {
     HEADLESS: process.env.HEADLESS !== 'false', // true by default
   
     // Test data
-    DEFAULT_USER: {
-      username: 'testuser',
-      password: 'testpassword123'
-    },
-    BASE_API_URL: 'https://reqres.in/api',
+    
     ENDPOINTS: {
       LOGIN: '/login',
       USERS: '/users',
       REGISTER: '/register'
     },
-    TEST_CONFIGURATIONS: {
-      TIMEOUT: 10000,
-      RETRY_ATTEMPTS: 2
-    }
+    TEST_DATA: {
+      VALID_LOGIN: {
+        email: 'eve.holt@reqres.in',
+        password: 'cityslicka'
+      },
+      INVALID_LOGIN: {
+        email: 'invalid@reqres.in',
+        password: ''
+      }
+    },
+    // ERROR_MESSAGES: {
+    //   UNAUTHORIZED: 'Missing credentials',
+    //   NOT_FOUND: 'User not found'
+    // }
     
   };

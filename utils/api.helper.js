@@ -1,5 +1,6 @@
 const axios = require('axios');
-const logger = require('./logger');
+const fs = require('fs');
+const path = require('path');
 
 class ApiHelper {
 constructor(baseURL, config = {}) {
@@ -15,37 +16,39 @@ constructor(baseURL, config = {}) {
   // Request Interceptor
   this.client.interceptors.request.use(
     config => {
-      logger.info(`[API Request] ${config.method.toUpperCase()} ${config.url}`, {
-        data: config.data,
-        headers: config.headers
-      });
+      this.logRequest(config);
       return config;
     },
-    error => {
-      logger.error('Request Interceptor Error', error);
-      return Promise.reject(error);
-    }
+    error => Promise.reject(error)
   );
 
   // Response Interceptor
   this.client.interceptors.response.use(
     response => {
-      logger.info(`[API Response] ${response.status}`, {
-        data: response.data
-      });
+      this.logResponse(response);
       return response;
     },
-    error => {
-      logger.error('Response Interceptor Error', {
-        status: error.response?.status,
-        data: error.response?.data
-      });
-      return Promise.reject(error);
-    }
+    error => Promise.reject(error)
   );
 }
 
-// Generic HTTP Methods
+logRequest(config) {
+  const logPath = path.resolve(__dirname, '../../logs/api-requests.log');
+  const logEntry = `[${new Date().toISOString()}] ${config.method.toUpperCase()} ${config.url}\n` +
+    `Headers: ${JSON.stringify(config.headers)}\n` +
+    `Body: ${JSON.stringify(config.data)}\n\n`;
+  
+  fs.appendFileSync(logPath, logEntry);
+}
+
+logResponse(response) {
+  const logPath = path.resolve(__dirname, '../../logs/api-responses.log');
+  const logEntry = `[${new Date().toISOString()}] ${response.status} ${response.config.url}\n` +
+    `Body: ${JSON.stringify(response.data)}\n\n`;
+  
+  fs.appendFileSync(logPath, logEntry);
+}
+
 async get(url, config = {}) {
   return this.client.get(url, config);
 }
@@ -62,7 +65,6 @@ async delete(url, config = {}) {
   return this.client.delete(url, config);
 }
 
-// Authentication Helpers
 setAuthHeader(token) {
   this.client.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }
