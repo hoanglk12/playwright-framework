@@ -1,6 +1,5 @@
 const { test, expect } = require('@playwright/test');
 const UserApi = require('../../pages/api/user.api');
-const Constants = require('../../config/constants');
 const AuthHelper = require('../../utils/auth.helper');
 
 test.describe('User Get API Tests', () => {
@@ -10,10 +9,10 @@ test.describe('User Get API Tests', () => {
     test.beforeAll(async () => {
         userApi = new UserApi();
         
-        // Retrieve token from AuthHelper
+        // Retrieve token
         authToken = AuthHelper.getToken();
         
-        // Validate that token exists
+        // Validate token exists
         if (!authToken) {
             throw new Error('Authentication token not found. Ensure login test runs first.');
         }
@@ -27,7 +26,7 @@ test.describe('User Get API Tests', () => {
                 Authorization: `Bearer ${authToken}`
             });
 
-            // Existing assertions...
+            // Assertions
             expect(userResponse.status).toBe(200);
             
             const userData = userResponse.data;

@@ -86,7 +86,7 @@ console.log(`Using environment: ${env}`);
 const envConfig = require(`./environments/${env}.config.js`);
 
 module.exports = defineConfig({
-  fullyParallel: true, // Enable parallel test execution
+fullyParallel: true, // Enable parallel test execution
 // Test Directory Configuration
 testDir: './tests/api',
 testMatch: ['**/*.spec.js'],
@@ -105,9 +105,17 @@ workers: process.env.CI ? 2 : 1,
 
 // Reporting Configuration
 reporter: [
-  ['list'], // Console output
-  ['html', { open: 'never' }]
-],
+      ['list'], // Built-in reporter for console output
+      ['allure-playwright', {
+        detail: true,
+        outputFolder: 'allure-results',
+        suiteTitle: false,
+        environmentInfo: {
+          environment: env,
+          video_quality: 'Full HD (1920x1080)'
+        }
+      }], // Allure reporter
+    ],
 
 // Global Test Settings
 use: {
