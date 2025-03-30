@@ -61,6 +61,10 @@ async put(url, data, config = {}) {
   return this.client.put(url, data, config);
 }
 
+async patch(url, data, config = {}) {
+  return this.client.patch(url, data, config);
+}
+
 async delete(url, config = {}) {
   return this.client.delete(url, config);
 }

@@ -140,6 +140,102 @@ class UserApi {
             }
         }
     }
+    async updateUserPartial(userId, userData, headers = {}) {
+        try {
+            // Validate inputs
+            if (!userId || typeof userId !== 'number') {
+                throw new Error('Invalid user ID');
+            }
+    
+            if (!userData || typeof userData !== 'object') {
+                throw new Error('Invalid user data');
+            }
+    
+            // Perform PATCH request to partially update user
+            const response = await axios.patch(`${this.userEndpoint}/${userId}`, userData, {
+                headers: {
+                    ...headers,
+                    'Content-Type': 'application/json'
+                },
+                validateStatus: function (status) {
+                    return status >= 200 && status < 300; // Default
+                }
+            });
+    
+            // Create a response object with status and data
+            return {
+                status: response.status,
+                data: {
+                    ...response.data,
+                    status: response.status
+                }
+            };
+        } catch (error) {
+            // Enhanced error handling
+            if (error.response) {
+                // Server responded with an error
+                const customError = new Error(`User partial update failed: ${error.response.data.error || 'Unknown error'}`);
+                customError.response = {
+                    status: error.response.status,
+                    data: error.response.data
+                };
+                throw customError;
+            } else if (error.request) {
+                // Request made but no response received
+                throw new Error('No response received from server');
+            } else {
+                // Error in setting up the request
+                throw error;
+            }
+        }
+    }
+    
+    async deleteUser(userId, headers = {}) {
+        try {
+            // Validate userId
+            if (!userId || typeof userId !== 'number') {
+                throw new Error('Invalid user ID');
+            }
+    
+            // Perform DELETE request
+            const response = await axios.delete(`${this.userEndpoint}/${userId}`, {
+                headers: {
+                    ...headers,
+                    'Content-Type': 'application/json'
+                },
+                validateStatus: function (status) {
+                    return status >= 200 && status < 300; // Default
+                }
+            });
+    
+            // Create a response object with status
+            return {
+                status: response.status,
+                data: {
+                    ...response.data,
+                    status: response.status
+                }
+            };
+        } catch (error) {
+            // Enhanced error handling
+            if (error.response) {
+                // Server responded with an error
+                const customError = new Error(`User deletion failed: ${error.response.data.error || 'Unknown error'}`);
+                customError.response = {
+                    status: error.response.status,
+                    data: error.response.data
+                };
+                throw customError;
+            } else if (error.request) {
+                // Request made but no response received
+                throw new Error('No response received from server');
+            } else {
+                // Error in setting up the request
+                throw error;
+            }
+        }
+    }
+    
     
 }
 

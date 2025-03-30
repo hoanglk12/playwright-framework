@@ -20,7 +20,8 @@ module.exports = {
     ENDPOINTS: {
       LOGIN: '/login',
       USERS: '/users',
-      REGISTER: '/register'
+      REGISTER: '/register',
+      DELETE: '/users',
     },
     TEST_DATA: {
       VALID_LOGIN: {

@@ -16,6 +16,8 @@ async handleApiCall(method, endpoint, data = null, config = {}) {
         return await this.apiHelper.post(endpoint, data, config);
       case 'put':
         return await this.apiHelper.put(endpoint, data, config);
+      case 'patch':
+        return await this.apiHelper.put(endpoint, data, config);
       case 'delete':
         return await this.apiHelper.delete(endpoint, config);
       default:
