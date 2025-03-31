@@ -54,18 +54,66 @@ module.exports = defineConfig({
         launchOptions: {
           args: [
             '--force-device-scale-factor=1', // Disable scaling
-            '--high-dpi-support=1'
-          ]
+            '--high-dpi-support=1',
+            '--disable-infobars',
+            '--disable-notifications',
+            '--disable-geolocation',
+            '--disable-extensions',
+            '--no-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-logging', // Equivalent to webdriver.chrome.args
+            '--disable-gpu',
+            '--disable-web-security',
+            '--disable-features=IsolateOrigins,site-per-process',
+            '--disable-site-isolation-trials',
+            '--disable-blink-features=AutomationControlled' 
+          ],
+          ignoreDefaultArgs: ['--enable-automation'], // Equivalent to excludeSwitches
+      },// Equivalent to ChromeOptions prefs
+      userPreferences: {
+        'credentials_enable_service': false,
+        'profile.password_manager_enabled': false,
+        'profile.default_content_setting_values.notifications': 2,
+        'profile.default_content_setting_values.geolocation': 2,
+        'useAutomationExtension': false,
       },
     }
     },
     {
       name: 'firefox',
-      use: { browserName: 'firefox' },
+      use: { 
+        browserName: 'firefox',
+        channel: 'firefox',
+        launchOptions: {
+          args: [
+            '--disable-infobars',
+            '--disable-notifications',
+            '--disable-geolocation'
+          ],
+          firefoxUserPrefs: {
+            // Equivalent to disable-infobars and notifications
+            'dom.webnotifications.enabled': false,
+            'dom.push.enabled': false,
+            
+            // Equivalent to disable-geolocation
+            'geo.enabled': false,
+            'geo.provider.use_corelocation': false,
+            'geo.prompt.testing': true,
+            'geo.prompt.testing.allow': false,
+            
+            // Equivalent to DRIVER_USE_MARIONETTE
+            'marionette.enabled': true,
+            
+            // Additional recommended settings
+            'permissions.default.desktop-notification': 2,
+            'permissions.default.geo': 2
+          },
+        }
+      },
     },
     {
-      name: 'webkit',
-      use: { browserName: 'webkit' },
+      name: 'edge',
+      use: { browserName: 'chromium', channel: 'msedge' },
     },
   ],
   
