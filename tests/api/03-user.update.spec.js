@@ -6,7 +6,7 @@ const Constants = require('../../config/constants');
 const AuthHelper = require('../../utils/auth.helper');
 const Logger = require('../../utils/logger');
 
-test.describe('User Update API Tests', () => {
+test.describe('User Update API Tests', { tag: ['@apiTests'] }, () => {
     let userApi, authApi, authToken, logger;
 
 

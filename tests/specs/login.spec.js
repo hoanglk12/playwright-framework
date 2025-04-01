@@ -73,7 +73,7 @@ try {
 });
 
 
-test('Login with valid credentials', async ({ }, ) => {
+test('Login with valid credentials', { tag: ['@smokeTests'] }, async ({ }, ) => {
   
   // Navigate to the login page
   await loginPage.navigateToLoginPage();

@@ -17,6 +17,9 @@
     "test:prod": "cross-env TEST_ENV=prod npx playwright test",
     "test:api": "playwright test tests/api",
     "test:ui": "playwright test tests/ui",
+    "test:performance": "playwright test tests/performance",
+    "test:parallel:api": "playwright test tests/api --workers=4",
+    "test:parallel:ui": "playwright test tests/specs --workers=6",
     "test:report": "npx playwright show-report",
     "test:debug": "npx playwright test --debug"
   },

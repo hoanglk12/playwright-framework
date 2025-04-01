@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 const UserApi = require('../../pages/api/user.api');
 const AuthHelper = require('../../utils/auth.helper');
 
-test.describe('User Get API Tests', () => {
+test.describe('User Get API Tests', { tag: ['@apiTests'] }, () => {
     let userApi;
     let authToken;
 

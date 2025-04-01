@@ -26,6 +26,13 @@ This is a basic Playwright automation testing framework.
    npm run test:uat tests/specs/articleDatalayer.spec.js
    npm run test:dev tests/specs/articleDatalayer.spec.js
    npm run test:dev tests/specs/articleDatalayer.spec.js --project=chromium
+7. Run parallel tests:
+   # Run all tests in parallel
+   npm run test:parallel
+   # Run specific test groups
+   npm run test:api
+   npm run test:ui
+
 
 
 
@@ -33,84 +40,14 @@ This is a basic Playwright automation testing framework.
 
 ```
 playwright-framework
+├─ .auth
+│  └─ token.json
 ├─ .idea
 │  ├─ inspectionProfiles
 │  │  └─ Project_Default.xml
-│  ├─ libraries
 │  ├─ modules.xml
 │  ├─ playwright-framework.iml
-│  ├─ vcs.xml
-│  └─ workspace.xml
-├─ check-chromium-version.js
-├─ config
-│  └─ constants.js
-├─ environments
-│  ├─ dev.config.js
-│  ├─ prod.config.js
-│  └─ uat.config.js
-├─ fixtures
-│  └─ custom-fixtures.js
-├─ global-setup.js
-├─ locators
-│  ├─ articleLocators.js
-│  ├─ cmsAdminLocators.js
-│  ├─ errorLocators.js
-│  ├─ homeLocators.js
-│  ├─ insightsLocators.js
-│  ├─ loginLocators.js
-│  └─ peopleLocators.js
-├─ logs
-│  ├─ cms-admin.log
-│  └─ hero-banner-validation.log
-├─ package-lock.json
-├─ package.json
-├─ pages
-│  ├─ articlePage.js
-│  ├─ basePage.js
-│  ├─ cmsAdminPage.js
-│  ├─ errorPage.js
-│  ├─ homePage.js
-│  ├─ insightsPage.js
-│  ├─ loginPage.js
-│  └─ peoplePage.js
-├─ playwright.config.js
-├─ README.md
-├─ scripts
-│  └─ upscale-videos.sh
-├─ tests
-│  ├─ performance
-│  │  ├─ homepage-performance.spec.js
-│  │  └─ page-load-time.spec.js
-│  └─ specs
-│     ├─ articleDatalayer.spec.js
-│     ├─ banner-image-loading.spec.js
-│     ├─ error-page.spec.js
-│     ├─ footer-social-icons.spec.js
-│     ├─ hero-banner-validation.spec.js
-│     ├─ insight-verification.spec.js
-│     ├─ login.spec.js
-│     └─ security.spec.js
-└─ utils
-   ├─ articleDataLayer-data.json
-   ├─ cmsAdminData.json
-   ├─ helpers.js
-   ├─ logger.js
-   ├─ login-data.json
-   ├─ performanceHelper.js
-   ├─ securityHelper.js
-   └─ Wait.js
-
-```
-```
-playwright-framework
-├─ .idea
-│  ├─ inspectionProfiles
-│  │  └─ Project_Default.xml
-│  ├─ libraries
-│  ├─ modules.xml
-│  ├─ playwright-framework.iml
-│  ├─ vcs.xml
-│  └─ workspace.xml
+│  └─ vcs.xml
 ├─ check-chromium-version.js
 ├─ config
 │  └─ constants.js
@@ -132,6 +69,10 @@ playwright-framework
 ├─ package-lock.json
 ├─ package.json
 ├─ pages
+│  ├─ api
+│  │  ├─ auth.api.js
+│  │  ├─ base.api.js
+│  │  └─ user.api.js
 │  ├─ articlePage.js
 │  ├─ basePage.js
 │  ├─ cmsAdminPage.js
@@ -146,6 +87,11 @@ playwright-framework
 │  ├─ clean-log.js
 │  └─ upscale-videos.sh
 ├─ tests
+│  ├─ api
+│  │  ├─ 01-login.spec.js
+│  │  ├─ 02-user.get.spec.js
+│  │  ├─ 03-user.update.spec.js
+│  │  └─ 04-user.delete.spec.js
 │  ├─ performance
 │  │  ├─ homepage-performance.spec.js
 │  │  └─ page-load-time.spec.js
@@ -159,9 +105,12 @@ playwright-framework
 │     ├─ login.spec.js
 │     └─ security.spec.js
 └─ utils
+   ├─ api.helper.js
    ├─ articleDataLayer-data.json
+   ├─ auth.helper.js
    ├─ chartGenerator.js
    ├─ cmsAdminData.json
+   ├─ data.generator.js
    ├─ helpers.js
    ├─ logger.js
    ├─ login-data.json

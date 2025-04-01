@@ -14,8 +14,16 @@ module.exports = defineConfig({
     '**/specs/security.spec.js'
   ],
   timeout: 60 * 1000,
+  expect: {
+    timeout: 10 * 1000  // 10 seconds for assertions
+  },
   retries: 1,
-  workers: 1,
+  workers: '50%',
+  fullyParallel: true,  // Run tests in parallel
+  // Test directory
+  testDir: './tests',
+  globalTimeout: 60 * 60 * 1000,  // 1 hour
+  
   reporter: [
     ['list'], // Built-in reporter for console output
     ['allure-playwright', {
@@ -45,6 +53,7 @@ module.exports = defineConfig({
     baseURL: envConfig.baseUrl,
     //channel: 'chrome'
   },
+  
   projects: [
     {
       name: 'chrome',
@@ -118,6 +127,8 @@ module.exports = defineConfig({
   ],
   
   globalSetup: './global-setup.js',
+  // Specify which tests to run based on tags
+  grep: process.env.TAGS ? new RegExp(process.env.TAGS) : /.*/
   
 });
 

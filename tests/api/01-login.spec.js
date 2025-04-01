@@ -3,7 +3,7 @@ const AuthApi = require('../../pages/api/auth.api');
 const Constants = require('../../config/constants');
 const AuthHelper = require('../../utils/auth.helper');
 
-test.describe('Authentication Flow', () => {
+test.describe('Authentication Flow', { tag: ['@apiTests'] }, () => {
     let authApi;
 
     test.beforeAll(async () => {
@@ -26,7 +26,7 @@ test.describe('Authentication Flow', () => {
         }
     });
 
-    test('Verify Token Exists', async () => {
+    test('Verify Token Exists',  async () => {
         const token = AuthHelper.getToken();
         expect(token).toBeTruthy();
     });
