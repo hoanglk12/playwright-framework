@@ -46,7 +46,7 @@ function runParallelTests(env, tag) {
     // Enhanced logging
     console.log(`🚀 Running Parallel Tests`);
     console.log(`🌍 Environment: ${env}`);
-    console.log(`🏷️  Tag: ${tag}`);
+    console.log(`🏷️ Tag: ${tag}`);
     console.log(`💻 Platform: ${platform}`);
 
     // Base Playwright command
