@@ -28,7 +28,7 @@ on:
           - all
           - chromium
           - firefox
-          - edge
+          - webkit
       test_suite:
         description: 'Test suite to run'
         required: true
@@ -72,12 +72,12 @@ jobs:
         id: set-matrix
         run: |
           if [[ "${{ env.BROWSER }}" == "all" ]]; then
-            echo "matrix={\"browser\":[\"chrome\",\"firefox\",\"edge\"]}" >> $GITHUB_OUTPUT
+            echo "matrix={\"browser\":[\"chrome\",\"firefox\",\"webkit\"]}" >> $GITHUB_OUTPUT
           else
             if [[ "${{ env.BROWSER }}" == "chromium" ]]; then
               echo "matrix={\"browser\":[\"chrome\"]}" >> $GITHUB_OUTPUT
             else
-              echo "matrix={\"browser\":[\"${{ env.BROWSER }}\"]}\" >> $GITHUB_OUTPUT
+              echo "matrix={\"browser\":[\"${{ env.BROWSER }}\"]}" >> $GITHUB_OUTPUT
             fi
           fi
 
@@ -101,13 +101,12 @@ jobs:
         run: npm run lint || echo "Linting failed but continuing"
 
   test:
-    name: Run Parallel Tests (${{ matrix.browser }})
+    name: Run Tests (${{ matrix.browser }})
     needs: [prepare, lint]
     timeout-minutes: 60
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      max-parallel: 3  # Limit parallel jobs
       matrix: ${{fromJson(needs.prepare.outputs.matrix)}}
 
     steps:
@@ -123,7 +122,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      # Playwright cache for faster browser installation
+      # Use Playwright's cache action to speed up browser installation
       - name: Get Playwright cache
         uses: actions/cache@v4
         id: playwright-cache
@@ -135,55 +134,50 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps ${{ matrix.browser }}
       
-      - name: Install Playwright browser dependencies if cache hit
+      - name: Install Playwright browser dependencies only if cache hit
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps ${{ matrix.browser }}
       
-      # Environment configuration
+      # Set up environment specific configurations
       - name: Configure environment
         run: |
           echo "Setting up environment variables for ${{ env.TEST_ENV }}"
           if [[ "${{ env.TEST_ENV }}" == "prod" ]]; then
             echo "LIVE_URL=${{ secrets.PROD_URL }}" >> $GITHUB_ENV
             echo "API_KEY=${{ secrets.PROD_API_KEY }}" >> $GITHUB_ENV
-          elif [[ "${{ env.TEST_ENV }}" == "uat" ]]; then
-            echo "LIVE_URL=${{ secrets.UAT_URL }}" >> $GITHUB_ENV
-            echo "API_KEY=${{ secrets.UAT_API_KEY }}" >> $GITHUB_ENV
+          elif [[ "${{ env.TEST_ENV }}" == "qa" ]]; then
+            echo "LIVE_URL=${{ secrets.QA_URL }}" >> $GITHUB_ENV
+            echo "API_KEY=${{ secrets.QA_API_KEY }}" >> $GITHUB_ENV
           else
-            echo "LIVE_URL=${{ secrets.DEV_URL || 'https://dev-environment.com' }}" >> $GITHUB_ENV
+            echo "LIVE_URL=${{ secrets.DEV_URL || 'https://ff-fieldfishercom-qa-web-ekfefjdmh6dbg3f7.uksouth-01.azurewebsites.net/' }}" >> $GITHUB_ENV
             echo "API_KEY=${{ secrets.DEV_API_KEY || 'test-api-key' }}" >> $GITHUB_ENV
           fi
       
-      # Parallel test execution with dynamic test suite selection
-      - name: Run Playwright tests in parallel
+      # Run appropriate test suite
+      - name: Run Playwright tests
         run: |
-          GREP_OPTION=""
           if [[ "${{ env.TEST_SUITE }}" == "smoke" ]]; then
-            GREP_OPTION="--grep=@smoke"
+            npx playwright test --project=${{ matrix.browser }} --grep "@smoke"
           elif [[ "${{ env.TEST_SUITE }}" == "regression" ]]; then
-            GREP_OPTION="--grep=@regression"
+            npx playwright test --project=${{ matrix.browser }} --grep "@regression"
           elif [[ "${{ env.TEST_SUITE }}" == "visual" ]]; then
-            GREP_OPTION="--grep=@visual"
+            npx playwright test --project=${{ matrix.browser }} --grep "@visual"
+          else
+            npx playwright test --project=${{ matrix.browser }}
           fi
-
-          npx playwright test \
-            --project=${{ matrix.browser }} \
-            $GREP_OPTION \
-            --workers=50% \
-            --reporter=line,allure-playwright
         env:
           NODE_ENV: ${{ env.TEST_ENV }}
           TEST_ENV: ${{ env.TEST_ENV }}
           BROWSER: ${{ matrix.browser }}
       
-      # Generate and upload Allure report
+      # Generate Allure report
       - name: Generate Allure Report
         if: always()
         run: |
           npm install -g allure-commandline
           npx allure generate ./allure-results --clean
       
-      # Upload test artifacts
+      # Upload test results and screenshots
       - name: Upload Playwright test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -192,6 +186,7 @@ jobs:
           path: playwright-report/
           retention-days: 30
       
+      # Upload Allure report
       - name: Upload Allure report
         if: always()
         uses: actions/upload-artifact@v4
@@ -200,6 +195,7 @@ jobs:
           path: allure-report/
           retention-days: 30
       
+      # Upload screenshots and videos for failed tests
       - name: Upload test artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -209,10 +205,6 @@ jobs:
             test-results/
             screenshots/
           retention-days: 7
-
-  # Rest of the workflow remains the same as in the original file
-  # (publish-report, security-scan, lighthouse jobs)
-
 
   publish-report:
     name: Publish Test Report
