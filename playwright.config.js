@@ -31,8 +31,8 @@ module.exports = defineConfig({
       outputFolder: 'allure-results',
       suiteTitle: true,
       environmentInfo: {
-        env: process.env.ENV,
-        tag: process.env.TAGS,
+        // env: process.env.ENV,
+        // tag: process.env.TAGS,
         video_quality: 'Full HD (1920x1080)'
       }
     }], // Allure reporter
@@ -128,6 +128,7 @@ module.exports = defineConfig({
   ],
   
   globalSetup: './global-setup.js',
+  
   // Specify which tests to run based on tags
   grep: process.env.TAGS ? new RegExp(process.env.TAGS) : /.*/
   

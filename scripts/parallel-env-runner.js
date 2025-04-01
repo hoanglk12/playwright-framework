@@ -148,7 +148,7 @@ function main() {
   
   // Log resolved values for transparency
   console.log(`📋 Resolved Environment: ${env}`);
-  console.log(`🏷️  Resolved Tag: ${tag}`);
+  console.log(`🏷️ Resolved Tag: ${tag}`);
 
   runParallelTests(env, tag);
 }
