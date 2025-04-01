@@ -32,6 +32,12 @@ This is a basic Playwright automation testing framework.
    # Run specific test groups
    npm run test:api
    npm run test:ui
+8. Run parallel tests with specific test groups and env
+   # Windows
+   npm run test:parallel:custom uat "@smokeTests"
+
+   # Linux/macOS
+   npm run test:parallel:custom uat "@smokeTests"
 
 
 

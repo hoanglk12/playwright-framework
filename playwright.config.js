@@ -3,7 +3,7 @@ require('dotenv').config();
 
 // Determine which environment to use
 const env = process.env.TEST_ENV || 'dev'; // Default to 'dev' if not specified
-console.log(`Using environment: ${env}`);
+//console.log(`Using environment: ${env}`);
 
 // Load the appropriate config file
 const envConfig = require(`./environments/${env}.config.js`);

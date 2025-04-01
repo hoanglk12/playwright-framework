@@ -20,7 +20,10 @@
     "test:performance": "playwright test tests/performance",
     "test:parallel:api": "playwright test tests/api --workers=4",
     "test:parallel:ui": "playwright test tests/specs --workers=6",
-    "test:report": "npx playwright show-report",
+    "test:parallel:dev": "cross-env TEST_ENV=dev TAGS=@smokeTests node scripts/parallel-env-runner.js",
+    "test:parallel:uat": "cross-env TEST_ENV=uat TAGS=@smokeTests node scripts/parallel-env-runner.js",
+    "test:parallel:prod": "cross-env TEST_ENV=prod TAGS=@smokeTests node scripts/parallel-env-runner.js",
+    "test:parallel:custom": "cross-env TEST_ENV=$ENV TAGS=$TAGS node scripts/parallel-env-runner.js",
     "test:debug": "npx playwright test --debug"
   },
   "keywords": [],
