@@ -29,9 +29,10 @@ module.exports = defineConfig({
     ['allure-playwright', {
       detail: true,
       outputFolder: 'allure-results',
-      suiteTitle: false,
+      suiteTitle: true,
       environmentInfo: {
-        environment: env,
+        env: process.env.ENV,
+        tag: process.env.TAGS,
         video_quality: 'Full HD (1920x1080)'
       }
     }], // Allure reporter

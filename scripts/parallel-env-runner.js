@@ -55,7 +55,7 @@ function runParallelTests(env, tag) {
       'test',
       `--grep="${tag}"`,
       '--workers=50%',
-      '--reporter=html,line'
+      '--reporter=allure-playwright'
     ];
 
     // Prepare environment variables
