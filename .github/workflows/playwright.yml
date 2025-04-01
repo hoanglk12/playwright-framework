@@ -28,7 +28,7 @@ on:
           - all
           - chromium
           - firefox
-          - webkit
+          - edge
       test_suite:
         description: 'Test suite to run'
         required: true
@@ -72,7 +72,7 @@ jobs:
         id: set-matrix
         run: |
           if [[ "${{ env.BROWSER }}" == "all" ]]; then
-            echo "matrix={\"browser\":[\"chrome\",\"firefox\",\"webkit\"]}" >> $GITHUB_OUTPUT
+            echo "matrix={\"browser\":[\"chrome\",\"firefox\",\"edge\"]}" >> $GITHUB_OUTPUT
           else
             if [[ "${{ env.BROWSER }}" == "chromium" ]]; then
               echo "matrix={\"browser\":[\"chrome\"]}" >> $GITHUB_OUTPUT
