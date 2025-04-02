@@ -39,8 +39,25 @@ This is a basic Playwright automation testing framework.
    # Linux/macOS
    npm run test:parallel:custom uat "@smokeTests"
 
+# Run smoke tests in staging environment
+node scripts/parallel-env-runner.js -e staging -t smoke
+
+# Run regression tests in production
+node scripts/parallel-env-runner.js -e prod -t regression
 
 
+# Run tests using a predefined critical tag preset
+node scripts/parallel-env-runner.js -p critical
+
+# Run tests using a regression preset in staging
+node scripts/parallel-env-runner.js -e staging -p regression
+
+
+# Add a new tag preset
+node scripts/parallel-env-runner.js config add-preset -n quick -t smoke sanity
+
+# List available tag presets
+node scripts/parallel-env-runner.js config list-presets
 
 
 
@@ -91,6 +108,7 @@ playwright-framework
 ├─ README.md
 ├─ scripts
 │  ├─ clean-log.js
+│  ├─ parallel-env-runner.js
 │  └─ upscale-videos.sh
 ├─ tests
 │  ├─ api
@@ -101,15 +119,16 @@ playwright-framework
 │  ├─ performance
 │  │  ├─ homepage-performance.spec.js
 │  │  └─ page-load-time.spec.js
-│  └─ specs
-│     ├─ articleDatalayer.spec.js
-│     ├─ banner-image-loading.spec.js
-│     ├─ error-page.spec.js
-│     ├─ footer-social-icons.spec.js
-│     ├─ hero-banner-validation.spec.js
-│     ├─ insight-verification.spec.js
-│     ├─ login.spec.js
-│     └─ security.spec.js
+│  ├─ specs
+│  │  ├─ articleDatalayer.spec.js
+│  │  ├─ banner-image-loading.spec.js
+│  │  ├─ error-page.spec.js
+│  │  ├─ footer-social-icons.spec.js
+│  │  ├─ hero-banner-validation.spec.js
+│  │  ├─ insight-verification.spec.js
+│  │  ├─ login.spec.js
+│  │  └─ security.spec.js
+│  └─ test-group.js
 └─ utils
    ├─ api.helper.js
    ├─ articleDataLayer-data.json

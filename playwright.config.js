@@ -1,12 +1,19 @@
 const { defineConfig } = require('@playwright/test');
 require('dotenv').config();
 
+// Import the Allure Metadata Generator
+const AllureMetadataGenerator = require('./utils/allure-metadata');
+
 // Determine which environment to use
 const env = process.env.TEST_ENV || 'dev'; // Default to 'dev' if not specified
 //console.log(`Using environment: ${env}`);
 
 // Load the appropriate config file
 const envConfig = require(`./environments/${env}.config.js`);
+
+// Generate Allure metadata
+const metadataGenerator = new AllureMetadataGenerator({ env });
+const metadata = metadataGenerator.generateTestRunMetadata();
 
 module.exports = defineConfig({
   testIgnore: [
@@ -31,14 +38,58 @@ module.exports = defineConfig({
       outputFolder: 'allure-results',
       suiteTitle: true,
       environmentInfo: {
-        // env: process.env.ENV,
-        // tag: process.env.TAGS,
-        video_quality: 'Full HD (1920x1080)'
-      }
+     // Use only primitive types and simple string values
+     'Environment': env,
+     'Run ID': metadata.uuid,
+     'Timestamp': new Date(metadata.start).toISOString(),
+     
+     // Operating System
+     'OS Name': process.platform,
+     'OS Version': require('os').release(),
+     'OS Architecture': process.arch,
+     
+     // Runtime
+     'Node Version': process.version,
+     'NPM Version': (() => {
+       try {
+         return require('child_process')
+           .execSync('npm --version')
+           .toString()
+           .trim();
+       } catch {
+         return 'Unknown';
+       }
+     })(),
+     
+     // Test Configuration
+     'Test Framework': 'Playwright',
+     'Execution Mode': process.env.CI ? 'CI' : 'Local',
+     'Parallel Execution': 'Yes',
+     'Worker Count': '50%',
+     'Retry Count': '1',
+     
+     // Performance
+     'CPU Cores': String(require('os').cpus().length),
+     'Total Memory': `${Math.round(require('os').totalmem() / (1024 * 1024 * 1024))} GB`,
+     'Free Memory': `${Math.round(require('os').freemem() / (1024 * 1024 * 1024))} GB`,
+     
+     // Additional Context
+    //  'Branch': process.env.BRANCH || 'N/A',
+    //  'Commit': process.env.COMMIT_SHA || 'N/A',
+    //  'Build Number': process.env.BUILD_NUMBER || 'N/A',
+      
+      // Additional Configuration
+      'video_quality': 'Full HD (1920x1080)',
+      
+     
+    },
+      disableWebdriverStepsReporting: false,
+      disableWebdriverScreenshotsReporting: false,
     }], // Allure reporter
   ],
   use: {
-    headless: process.env.CI ? true : false,
+    //headless: process.env.CI ? true : false,
+    headless: true,
     launchOptions: {
       args: ['--disable-gpu=false'] // Enable GPU
     },

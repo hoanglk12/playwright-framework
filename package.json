@@ -9,22 +9,26 @@
     "test": "npx playwright test",
     "test:clean-logs": "node scripts/clean-logs.js",
     "test:headed": "npx playwright test --headed",
-    "test:chrome": "npx playwright test --project=chrome",
+   
     "report": "npx allure generate ./allure-results --clean && npx allure open",
+    "test:allure": "ALLURE_NO_ANALYTICS=1 playwright test --reporter=allure-playwright",
+    "allure:generate": "allure generate allure-results --clean -o allure-report",
+    "allure:open": "allure open allure-report",
+    "allure:clear": "rm -rf allure-results allure-report",
     "posttest": "sh scripts/upscale-videos.sh",
-    "test:dev": "cross-env TEST_ENV=dev npx playwright test",
-    "test:uat": "cross-env TEST_ENV=uat npx playwright test",
-    "test:prod": "cross-env TEST_ENV=prod npx playwright test",
-    "test:api": "playwright test tests/api",
-    "test:ui": "playwright test tests/ui",
-    "test:performance": "playwright test tests/performance",
-    "test:parallel:api": "playwright test tests/api --workers=4",
-    "test:parallel:ui": "playwright test tests/specs --workers=6",
-    "test:parallel:dev": "cross-env TEST_ENV=dev TAGS=@smokeTests node scripts/parallel-env-runner.js",
-    "test:parallel:uat": "cross-env TEST_ENV=uat TAGS=@smokeTests node scripts/parallel-env-runner.js",
-    "test:parallel:prod": "cross-env TEST_ENV=prod TAGS=@smokeTests node scripts/parallel-env-runner.js",
-    "test:parallel:custom": "cross-env TEST_ENV=$ENV TAGS=$TAGS node scripts/parallel-env-runner.js",
-    "test:debug": "npx playwright test --debug"
+    "test:api:folder": "node scripts/parallel-env-runner.js --env dev --location api",
+    "test:specs": "node scripts/parallel-env-runner.js --env dev --location specs",
+    "test:performance": "node scripts/parallel-env-runner.js --env dev --location performance",
+    "test:api:tag": "node scripts/parallel-env-runner.js --env dev --tags @apiTests --parallel false",
+    "test:regression": "node scripts/parallel-env-runner.js --env dev --tags @regression",
+    "test:all:parallel": "node scripts/parallel-env-runner.js --env dev",
+    "test:all": "node scripts/parallel-env-runner.js --env dev --parallel false",
+    "test:chrome": "node scripts/parallel-env-runner.js --env dev --project chrome",
+    "test:firefox": "node scripts/parallel-env-runner.js --env dev --project firefox",
+    "test:edge": "node scripts/parallel-env-runner.js --env dev --project edge",
+    "test:dev": "node scripts/parallel-env-runner.js --env dev",
+    "test:uat": "node scripts/parallel-env-runner.js --env uat"
+ 
   },
   "keywords": [],
   "author": "Hoang Pham",
@@ -37,6 +41,7 @@
     "@types/node": "^22.13.5",
     "allure-commandline": "^2.32.2",
     "allure-playwright": "^3.2.0",
+    "chalk": "^5.4.1",
     "chart.js": "^4.4.8",
     "chartjs-node-canvas": "^5.0.0",
     "cross-env": "^7.0.3",
@@ -46,9 +51,11 @@
     "eslint-plugin-playwright": "^0.12.0",
     "fluent-ffmpeg": "^2.1.2",
     "fs-extra": "^11.3.0",
+    "glob": "^11.0.1",
     "lighthouse": "^12.4.0",
     "prettier": "^2.8.0",
-    "winston": "^3.17.0"
+    "winston": "^3.17.0",
+    "yargs": "^17.7.2"
   },
   "dependencies": {
     "axios": "^1.8.4",
@@ -58,6 +65,7 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "playwright": "^1.51.1",
+    "uuid": "^11.1.0",
     "winston-daily-rotate-file": "^5.0.0"
   }
 }

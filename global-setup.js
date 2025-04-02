@@ -1,6 +1,8 @@
 const path = require('path');
 const fs = require('fs-extra');
 const os = require('os');
+// Correct import for AllureMetadataGenerator
+const AllureMetadataGenerator = require('./utils/allure-metadata');
 
 // Utility function to safely remove directory contents with enhanced error handling
 async function safeEmptyDir(dirPath, logger) {
@@ -37,6 +39,7 @@ async function safeEmptyDir(dirPath, logger) {
       try {
         // Attempt to remove file/directory with full permissions
         await fs.remove(filePath);
+        logger.info(`Removed: ${file} successfully`);
       } catch (removeError) {
         logger.warn(`Failed to remove ${file}`, {
           errorMessage: removeError.message,
@@ -139,7 +142,19 @@ async function globalSetup() {
 
     // Prepare test environment
     await prepareTestEnvironment(logger);
-
+    try {
+      // Add more detailed logging
+      logger.info('Generating Allure metadata...');
+      // Generate Allure metadata
+      AllureMetadataGenerator.writeAllureMetadata('./allure-results', {
+        'base.url': process.env.BASE_URL || 'unknown',
+        'test.environment': process.env.TEST_ENV || 'dev',
+        'additional.debug.info': true // Add extra debugging information
+      });
+      logger.info('Metadata generation completed successfully');
+    } catch (error) {
+      logger.error('Metadata generation failed:', error);
+    }
     // Calculate setup duration
     const duration = Date.now() - startTime;
 
