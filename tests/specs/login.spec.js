@@ -2,6 +2,7 @@ const { test, expect } = require('@playwright/test');
 const LoginPage = require('../../pages/loginPage');
 const BasePage = require('../../pages/basePage');
 const Logger = require('../../utils/logger');
+
 // Determine which environment to use
 const env = process.env.TEST_ENV || 'dev';
 const envConfig = require(`../../environments/${env}.config.js`);
@@ -73,7 +74,7 @@ try {
 });
 
 
-test('Login with valid credentials', { tag: ['@smokeTests'] }, async ({ }, ) => {
+test('Login with valid credentials', { tag: ['@smokeTests'] }, async ({}, ) => {
   
   // Navigate to the login page
   await loginPage.navigateToLoginPage();

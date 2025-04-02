@@ -103,6 +103,7 @@ module.exports = defineConfig({
     },
     screenshot: 'on',
     baseURL: envConfig.baseUrl,
+    browserConsoleLogToFile: true,
     //channel: 'chrome'
   },
   
