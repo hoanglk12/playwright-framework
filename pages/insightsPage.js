@@ -5,24 +5,45 @@ const BasePage = require('./basePage');
 require('dotenv').config();
 const env = process.env.TEST_ENV || 'dev'; // Default to 'dev' if not specified
 const envConfig = require(`../environments/${env}.config.js`);
+const Logger = require('../utils/logger');
 
 class InsightsPage extends BasePage {
     constructor(page) {
         super(page);
         this.basePage = new BasePage(page);
         this.wait = new Wait(page);
+        this.logger = Logger;
         
     }
 
     async navigateToInsightsPage() {
+        try{
+        this.logger.info(`Navigating to URL: ${envConfig.insightsPageUrl}`);
         await this.basePage.navigate(envConfig.insightsPageUrl);
-        await this.wait.forLoadState('domcontentloaded', constants.LONG_TIMEOUT); // Use the method from BasePage
+        await this.wait.forLoadState('domcontentloaded', constants.LONG_TIMEOUT);
+        this.logger.info(`Successfully navigated to URL: ${envConfig.insightsPageUrl}`);
+        }
+        catch (error) {
+            this.logger.error(`Navigation failed to ${envConfig.insightsPageUrl}`, error);
+            throw error;
+        
+        }
     }
 
     async countVisibleArticles() {
+        try{
+        this.logger.info(`Counting visible articles`);
         await this.page.waitForSelector(insightsLocators.articleCard.selector, { state: 'visible' });
         const elements = await this.page.$$(insightsLocators.articleCard.selector);
+        this.logger.info(`Found ${elements.length} visible articles`);
         return elements.length;
+        
+        }
+        catch (error) {
+            this.logger.error(`Failed to count visible articles`, error);
+            throw error;
+        
+        }
         
     }
 /**
@@ -30,6 +51,9 @@ class InsightsPage extends BasePage {
      * @returns {Promise<string>} The title of the clicked article
      */
 async clickRandomArticleCard() {
+    try {
+        
+    this.logger.info('Clicking on a random article card');
     await this.page.waitForSelector(insightsLocators.articleCard.selector, { state: 'visible' });
     const articleCards = await this.page.$$(insightsLocators.articleCard.selector);
     
@@ -48,8 +72,12 @@ async clickRandomArticleCard() {
     // Click the card
     await selectedCard.click();
     await this.wait.forLoadState('domcontentloaded', constants.LONG_TIMEOUT);
-    
+    this.logger.info(`Successfully clicked on article: ${articleTitle}`);
     return articleTitle;
+}
+    catch (error) {
+        this.logger.error(`Failed to click random article card`, error);
+    }
 }
 
 /**
@@ -57,6 +85,10 @@ async clickRandomArticleCard() {
  * @returns {Promise<{hasLazyLoading: boolean, loadingAttribute: string|null}>}
  */
 async checkInnerBannerImageLazyLoading() {
+    try {
+
+    this.logger.info('Checking inner banner image lazy loading');
+    
     await this.page.waitForSelector(insightsLocators.innerBannerImage.selector, { state: 'visible' });
     const bannerImage = await this.page.$(insightsLocators.innerBannerImage.selector);
     const loadingAttribute = await bannerImage.getAttribute('loading');
@@ -65,6 +97,10 @@ async checkInnerBannerImageLazyLoading() {
         hasLazyLoading: loadingAttribute === 'lazy',
         loadingAttribute: loadingAttribute
     };
+}
+    catch (error) {
+        this.logger.error('Failed to check inner banner image lazy loading', error);
+    }
 }
 
    

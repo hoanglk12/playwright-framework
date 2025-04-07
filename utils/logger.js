@@ -43,9 +43,7 @@ class Logger {
     createLogger() {
         // Custom log format with improved readability
         const logFormat = winston.format.combine(
-            winston.format.timestamp({ 
-                format: 'YYYY-MM-DD HH:mm:ss.SSS' 
-            }),
+            winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
             winston.format.errors({ stack: true }),
             winston.format.printf(({ timestamp, level, message, ...metadata }) => {
                 // Construct log message with improved formatting
