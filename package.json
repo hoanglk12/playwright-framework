@@ -40,7 +40,7 @@
     "@types/node": "^22.13.5",
     "@wdio/allure-reporter": "^9.12.3",
     "allure-commandline": "^2.33.0",
-    "allure-playwright": "^3.2.0",
+    "allure-playwright": "^3.2.1",
     "chalk": "^5.4.1",
     "chart.js": "^4.4.8",
     "chartjs-node-canvas": "^5.0.0",

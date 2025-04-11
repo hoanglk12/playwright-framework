@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 const TypographyHelper = require('../../utils/typography.helper');
 const BasePage = require('../../pages/basePage');
 const Logger = require('../../utils/logger');
-const allure = require('@wdio/allure-reporter').default;
+// Remove WebdriverIO Allure import
 const fs = require('fs');
 const path = require('path');
 
@@ -13,6 +13,9 @@ const envConfig = require(`../../environments/${env}.config.js`);
 // Get Figma API token from environment or configuration
 const figmaApiToken = process.env.FIGMA_API_TOKEN || envConfig.figmaApiToken;
 const figmaFileId = process.env.FIGMA_FILE_ID || envConfig.figmaFileId;
+
+// Initialize logger once at module level
+const logger = Logger || console;
 
 // Element mappings between Figma nodes and web selectors
 const elementMappings = [
@@ -35,17 +38,16 @@ const elementMappings = [
 ];
 
 test.describe('Typography Verification Tests', () => {
-    let typographyHelper, logger, basePage;
+    let typographyHelper, basePage;
     let allResults = [];
 
-    test.beforeAll(async () => {
-        allure.epic('Visual Regression Testing');
-        allure.feature('Typography Verification');
-        allure.story('Figma to Web Typography Comparison');
+    test.beforeAll(async ({}, testInfo) => {
+        // Use Playwright's test annotations instead of allure methods
+        testInfo.annotations.push({ type: 'epic', description: 'Visual Regression Testing' });
+        testInfo.annotations.push({ type: 'feature', description: 'Typography Verification' });
+        testInfo.annotations.push({ type: 'story', description: 'Figma to Web Typography Comparison' });
         
         try {
-            // Initialize logger
-            logger = Logger || console;
             logger.info('Initializing Typography Verification Tests');
             
             // Verify Figma API token
@@ -57,7 +59,7 @@ test.describe('Typography Verification Tests', () => {
             typographyHelper = new TypographyHelper(figmaApiToken);
             
             logger.info('Typography Verification Tests initialized successfully');
-            allure.addDescription('This test verifies that typography styles on the website match the specifications from Figma designs.');
+            testInfo.annotations.push({ type: 'description', description: 'This test verifies that typography styles on the website match the specifications from Figma designs.' });
         } catch (error) {
             logger.error('Failed to initialize Typography Verification Tests', {
                 error: error.message
@@ -95,25 +97,25 @@ test.describe('Typography Verification Tests', () => {
             fs.writeFileSync(jsonReportPath, JSON.stringify(summaryReport, null, 2));
             fs.writeFileSync(htmlReportPath, htmlReport);
             
-            // Attach reports to Allure
-            allure.addAttachment(
-                'Typography Comparison Summary', 
-                JSON.stringify(summaryReport, null, 2), 
-                'application/json'
-            );
+            // Attach reports to test info instead of allure
+            testInfo.attachments.push({
+                name: 'Typography Comparison Summary',
+                contentType: 'application/json',
+                body: Buffer.from(JSON.stringify(summaryReport, null, 2))
+            });
             
-            allure.addAttachment(
-                'Typography HTML Report', 
-                htmlReport, 
-                'text/html'
-            );
+            testInfo.attachments.push({
+                name: 'Typography HTML Report',
+                contentType: 'text/html',
+                body: Buffer.from(htmlReport)
+            });
             
-            // Add environment info to Allure report
-            allure.addArgument('Environment', env);
-            allure.addArgument('Figma File ID', figmaFileId);
-            allure.addArgument('Total Elements', allResults.length.toString());
-            allure.addArgument('Matching Elements', allResults.filter(r => r.matches).length.toString());
-            allure.addArgument('Mismatched Elements', allResults.filter(r => !r.matches).length.toString());
+            // Add environment info as annotations
+            testInfo.annotations.push({ type: 'environment', description: env });
+            testInfo.annotations.push({ type: 'figma_file', description: figmaFileId });
+            testInfo.annotations.push({ type: 'total_elements', description: allResults.length.toString() });
+            testInfo.annotations.push({ type: 'matching_elements', description: allResults.filter(r => r.matches).length.toString() });
+            testInfo.annotations.push({ type: 'mismatched_elements', description: allResults.filter(r => !r.matches).length.toString() });
         } catch (error) {
             logger.error('Failed to generate summary report', {
                 error: error.message
@@ -121,93 +123,93 @@ test.describe('Typography Verification Tests', () => {
         }
     });
 
-    test('Verify typography consistency with Figma designs', async ({ page }) => {
-        allure.severity('critical');
+    test('Verify typography consistency with Figma designs', async ({ page }, testInfo) => {
+        // Set severity as annotation
+        testInfo.annotations.push({ type: 'severity', description: 'critical' });
         
         try {
             // Navigate to the page
-            logger.info(`Navigating to: ${envConfig.liveSiteUrl}`);
-            allure.startStep(`Navigating to: ${envConfig.liveSiteUrl}`);
-            await basePage.navigate(envConfig.liveSiteUrl);
-            await page.waitForLoadState('networkidle');
-            allure.endStep('passed');
+            logger.info(`Navigating to: ${envConfig.figmaUrl}`);
+            
+            // Use step instead of allure.startStep
+            await testInfo.step(`Navigating to: ${envConfig.figmaUrl}`, async () => {
+                await basePage.navigate(envConfig.figmaUrl);
+                await page.waitForLoadState('networkidle');
+            });
             
             // Test each element mapping
             for (const mapping of elementMappings) {
-                allure.startStep(`Checking typography for element: ${mapping.name}`);
-                logger.info(`Checking typography for element: ${mapping.name}`);
-                
-                try {
-                    // Get typography from Figma
-                    const figmaTypography = await typographyHelper.getFigmaTypography(
-                        figmaFileId, 
-                        mapping.figmaNodeId
-                    );
+                await testInfo.step(`Checking typography for element: ${mapping.name}`, async () => {
+                    logger.info(`Checking typography for element: ${mapping.name}`);
                     
-                    // Get typography from web
-                    await basePage.waitForElementVisible(mapping.webSelector);
-                    const element = page.locator(mapping.webSelector);
-                    const webTypography = await typographyHelper.getWebTypography(element);
-                    
-                    // Compare typography
-                    const comparisonResult = typographyHelper.compareTypography(
-                        figmaTypography, 
-                        webStyles,
-                        { tolerance: 1 } // 1px tolerance for numeric values
-                    );
-                    
-                    // Generate report for this element
-                    const report = typographyHelper.generateReport(mapping.name, comparisonResult);
-                    allResults.push(report);
-                    
-                    // Log result
-                    if (comparisonResult.matches) {
-                        logger.info(`Typography matches for ${mapping.name}`);
-                    } else {
-                        logger.warn(`Typography discrepancies found for ${mapping.name}`, {
-                            discrepancies: comparisonResult.discrepancies
+                    try {
+                        // Get typography from Figma
+                        const figmaTypography = await typographyHelper.getFigmaTypography(
+                            figmaFileId, 
+                            mapping.figmaNodeId
+                        );
+                        
+                        // Get typography from web
+                        await basePage.waitForElementVisible(mapping.webSelector);
+                        const element = page.locator(mapping.webSelector);
+                        const webTypography = await typographyHelper.getWebTypography(element);
+                        
+                        // Compare typography
+                        const comparisonResult = typographyHelper.compareTypography(
+                            figmaTypography, 
+                            webTypography, // Changed from webStyles to webTypography
+                            { tolerance: 1 } // 1px tolerance for numeric values
+                        );
+                        
+                        // Generate report for this element
+                        const report = typographyHelper.generateReport(mapping.name, comparisonResult);
+                        allResults.push(report);
+                        
+                        // Log result
+                        if (comparisonResult.matches) {
+                            logger.info(`Typography matches for ${mapping.name}`);
+                        } else {
+                            logger.warn(`Typography discrepancies found for ${mapping.name}`, {
+                                discrepancies: comparisonResult.discrepancies
+                            });
+                        }
+                        
+                        // Highlight element for screenshot
+                        await basePage.highlightElement(mapping.webSelector);
+                        
+                        // Take a screenshot of the element
+                        const screenshotBuffer = await element.screenshot();
+                        
+                        // Save screenshot to disk
+                        const screenshotPath = `./test-results/screenshots/typography-${mapping.name.toLowerCase().replace(/\s+/g, '-')}.png`;
+                        fs.mkdirSync(path.dirname(screenshotPath), { recursive: true });
+                        fs.writeFileSync(screenshotPath, screenshotBuffer);
+                        
+                        // Attach screenshot to test info
+                        testInfo.attachments.push({
+                            name: `${mapping.name} Screenshot`,
+                            contentType: 'image/png',
+                            body: screenshotBuffer
                         });
+                        
+                        // Assert that typography matches
+                        expect(comparisonResult.matches, 
+                            `Typography for ${mapping.name} should match Figma design`).toBeTruthy();
+                    } catch (elementError) {
+                        logger.error(`Error checking typography for ${mapping.name}`, {
+                            error: elementError.message,
+                            stack: elementError.stack
+                        });
+                        
+                        testInfo.attachments.push({
+                            name: `Error checking ${mapping.name}`,
+                            contentType: 'text/plain',
+                            body: Buffer.from(elementError.stack || elementError.message)
+                        });
+                        
+                        // Continue with next element
                     }
-                    
-                    // Highlight element for screenshot
-                    await basePage.highlightElement(mapping.webSelector);
-                    
-                    // Take a screenshot of the element
-                    const screenshotBuffer = await element.screenshot();
-                    
-                    // Save screenshot to disk
-                    const screenshotPath = `./test-results/screenshots/typography-${mapping.name.toLowerCase().replace(/\s+/g, '-')}.png`;
-                    fs.mkdirSync(path.dirname(screenshotPath), { recursive: true });
-                    fs.writeFileSync(screenshotPath, screenshotBuffer);
-                    
-                    // Attach screenshot to Allure report
-                    allure.addAttachment(
-                        `${mapping.name} Screenshot`, 
-                        screenshotBuffer, 
-                        'image/png'
-                    );
-                    
-                    // Assert that typography matches
-                    expect(comparisonResult.matches, 
-                        `Typography for ${mapping.name} should match Figma design`).toBeTruthy();
-                    
-                    allure.endStep('passed');
-                } catch (elementError) {
-                    logger.error(`Error checking typography for ${mapping.name}`, {
-                        error: elementError.message,
-                        stack: elementError.stack
-                    });
-                    
-                    allure.endStep('failed');
-                    allure.addAttachment(
-                        `Error checking ${mapping.name}`, 
-                        elementError.stack, 
-                        'text/plain'
-                    );
-                    
-                    // Continue with next element
-                    continue;
-                }
+                });
             }
         } catch (error) {
             logger.error('Failed to verify typography', {
@@ -215,11 +217,11 @@ test.describe('Typography Verification Tests', () => {
                 stack: error.stack
             });
             
-            allure.addAttachment(
-                'Error verifying typography', 
-                error.stack, 
-                'text/plain'
-            );
+            testInfo.attachments.push({
+                name: 'Error verifying typography',
+                contentType: 'text/plain',
+                body: Buffer.from(error.stack || error.message)
+            });
             
             throw error;
         }
