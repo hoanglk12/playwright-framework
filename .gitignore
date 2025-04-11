@@ -12,6 +12,7 @@ node_modules/
 /allure-report/**
 /data/
 /data/**
+/axe-reports/**
 
 # Env
 .env

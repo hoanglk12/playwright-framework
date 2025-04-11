@@ -6,7 +6,6 @@ const AllureMetadataGenerator = require('./utils/allure-metadata');
 
 // Determine which environment to use
 const env = process.env.TEST_ENV || 'dev'; // Default to 'dev' if not specified
-//console.log(`Using environment: ${env}`);
 
 // Load the appropriate config file
 const envConfig = require(`./environments/${env}.config.js`);
@@ -38,57 +37,38 @@ module.exports = defineConfig({
       outputFolder: 'allure-results',
       suiteTitle: true,
       environmentInfo: {
-     // Use only primitive types and simple string values
-     'Environment': env,
-     'Run ID': metadata.uuid,
-     'Timestamp': new Date(metadata.start).toISOString(),
-     
-     // Operating System
-     'OS Name': process.platform,
-     'OS Version': require('os').release(),
-     'OS Architecture': process.arch,
-     
-     // Runtime
-     'Node Version': process.version,
-     'NPM Version': (() => {
-       try {
-         return require('child_process')
-           .execSync('npm --version')
-           .toString()
-           .trim();
-       } catch {
-         return 'Unknown';
-       }
-     })(),
-     
-     // Test Configuration
-     'Test Framework': 'Playwright',
-     'Execution Mode': process.env.CI ? 'CI' : 'Local',
-     'Parallel Execution': 'Yes',
-     'Worker Count': '50%',
-     'Retry Count': '1',
-     
-     // Performance
-     'CPU Cores': String(require('os').cpus().length),
-     'Total Memory': `${Math.round(require('os').totalmem() / (1024 * 1024 * 1024))} GB`,
-     'Free Memory': `${Math.round(require('os').freemem() / (1024 * 1024 * 1024))} GB`,
-     
-     // Additional Context
-    //  'Branch': process.env.BRANCH || 'N/A',
-    //  'Commit': process.env.COMMIT_SHA || 'N/A',
-    //  'Build Number': process.env.BUILD_NUMBER || 'N/A',
-      
-      // Additional Configuration
-      'video_quality': 'Full HD (1920x1080)',
-      
-     
-    },
+        'Environment': env,
+        'Run ID': metadata.uuid,
+        'Timestamp': new Date(metadata.start).toISOString(),
+        'OS Name': process.platform,
+        'OS Version': require('os').release(),
+        'OS Architecture': process.arch,
+        'Node Version': process.version,
+        'NPM Version': (() => {
+          try {
+            return require('child_process')
+              .execSync('npm --version')
+              .toString()
+              .trim();
+          } catch {
+            return 'Unknown';
+          }
+        })(),
+        'Test Framework': 'Playwright',
+        'Execution Mode': process.env.CI ? 'CI' : 'Local',
+        'Parallel Execution': 'Yes',
+        'Worker Count': '50%',
+        'Retry Count': '1',
+        'CPU Cores': String(require('os').cpus().length),
+        'Total Memory': `${Math.round(require('os').totalmem() / (1024 * 1024 * 1024))} GB`,
+        'Free Memory': `${Math.round(require('os').freemem() / (1024 * 1024 * 1024))} GB`,
+        'video_quality': 'Full HD (1920x1080)',
+      },
       disableWebdriverStepsReporting: false,
       disableWebdriverScreenshotsReporting: false,
     }], // Allure reporter
   ],
   use: {
-    //headless: process.env.CI ? true : false,
     headless: true,
     launchOptions: {
       args: ['--disable-gpu=false'] // Enable GPU
@@ -104,7 +84,6 @@ module.exports = defineConfig({
     screenshot: 'on',
     baseURL: envConfig.baseUrl,
     browserConsoleLogToFile: true,
-    //channel: 'chrome'
   },
   
   projects: [
@@ -152,25 +131,18 @@ module.exports = defineConfig({
             '--disable-notifications',
             '--disable-geolocation'
           ],
-          firefoxUserPrefs: {
-            // Equivalent to disable-infobars and notifications
-            'dom.webnotifications.enabled': false,
-            'dom.push.enabled': false,
-            
-            // Equivalent to disable-geolocation
-            'geo.enabled': false,
-            'geo.provider.use_corelocation': false,
-            'geo.prompt.testing': true,
-            'geo.prompt.testing.allow': false,
-            
-            // Equivalent to DRIVER_USE_MARIONETTE
-            'marionette.enabled': true,
-            
-            // Additional recommended settings
-            'permissions.default.desktop-notification': 2,
-            'permissions.default.geo': 2
-          },
-        }
+        },
+        firefoxUserPrefs: {
+          'dom.webnotifications.enabled': false,
+          'dom.push.enabled': false,
+          'geo.enabled': false,
+          'geo.provider.use_corelocation': false,
+          'geo.prompt.testing': true,
+          'geo.prompt.testing.allow': false,
+          'marionette.enabled': true,
+          'permissions.default.desktop-notification': 2,
+          'permissions.default.geo': 2
+        },
       },
     },
     {
@@ -182,9 +154,17 @@ module.exports = defineConfig({
   globalSetup: './global-setup.js',
   
   // Specify which tests to run based on tags
-  grep: process.env.TAGS ? new RegExp(process.env.TAGS) : /.*/
+  grep: process.env.TAGS ? new RegExp(process.env.TAGS) : /.*/,
+
+  // Accessibility reporter configuration
+  axeReporter: {
+    outputType: 'html', // Output type for the accessibility report
+    outputPath: 'axe-reports/accessibility-report.html', // Path to save the accessibility report
+    allowedViolations: 0, // Number of allowed violations before failing the test
+  },
   
 });
+
 
 
 // const { defineConfig } = require('@playwright/test');

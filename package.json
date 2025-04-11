@@ -27,7 +27,10 @@
     "test:firefox": "node scripts/parallel-env-runner.js --env dev --project firefox",
     "test:edge": "node scripts/parallel-env-runner.js --env dev --project edge",
     "test:dev": "node scripts/parallel-env-runner.js --env dev",
-    "test:uat": "node scripts/parallel-env-runner.js --env uat"
+    "test:uat": "node scripts/parallel-env-runner.js --env uat",
+    "test:accessibility": "playwright test tests/accessibility",
+    "test:accessibility:report": "playwright test tests/accessibility --reporter=html",
+    "test:accessibility:debug": "PWDEBUG=1 playwright test tests/accessibility"
   },
   "keywords": [],
   "author": "Hoang Pham",
@@ -41,6 +44,8 @@
     "@wdio/allure-reporter": "^9.12.3",
     "allure-commandline": "^2.33.0",
     "allure-playwright": "^3.2.1",
+    "axe-core": "^4.10.3",
+    "axe-html-reporter": "^2.2.11",
     "chalk": "^5.4.1",
     "chart.js": "^4.4.8",
     "chartjs-node-canvas": "^5.0.0",

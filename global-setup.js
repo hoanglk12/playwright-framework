@@ -94,12 +94,31 @@ async function clearAllureResults(logger) {
   }
 }
 
+// New function to clear Axe reports
+async function clearAxeReports(logger) {
+  const axeReportsPath = path.resolve(process.cwd(), 'axe-reports');
+  
+  try {
+    await safeEmptyDir(axeReportsPath, logger);
+    logger.info('Axe reports directory cleared successfully');
+  } catch (error) {
+    logger.error('Failed to clear Axe reports', {
+      errorMessage: error.message
+    });
+    throw error;
+  }
+}
+
 // Utility function to prepare test environment
 async function prepareTestEnvironment(logger) {
   const environmentSetups = [
     {
       name: 'Allure Results',
       action: () => clearAllureResults(logger)
+    },  
+    {
+      name: 'Axe Reports',
+      action: () => clearAxeReports(logger)
     },
     {
       name: 'Logs Directory',
