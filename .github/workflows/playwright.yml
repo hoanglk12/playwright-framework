@@ -1,13 +1,13 @@
 name: Playwright Test Automation
 
 on:
-  push:
-    branches: [main, master, develop]
-  pull_request:
-    branches: [main, master, develop]
-  schedule:
+  #push:
+    #branches: [main, master, develop]
+  #pull_request:
+    #branches: [main, master, develop]
+  #schedule:
     # Run tests automatically at 2 AM UTC every day
-    - cron: '0 2 * * *'
+    #- cron: '0 2 * * *'
   workflow_dispatch:
     inputs:
       environment:
